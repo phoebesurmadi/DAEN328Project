@@ -1,1 +1,27 @@
+# API call
 
+requests # To make HTTP requests and fetch data from APIs
+
+
+#   cleaning and storing
+
+pandas # To store, manipulate, and clean tabular data
+sqlite3  # To interact with an SQLite database for data storage
+json  # To handle JSON data from APIs
+os # working with operating system functions
+
+
+
+# streamlit
+
+streamlit
+psycopg2
+matplotlib
+seaborn
+sqlalchemy
+plotly
+
+
+# dockerizing (?)
+
+psycopg2-binary

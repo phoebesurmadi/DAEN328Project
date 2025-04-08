@@ -1,7 +1,7 @@
 DB_PARAMS {
   "dbname": "....",
   "user": "user",
-  "password": "password,
+  "password": "password",
   "host": "localhost",
   "port": ""
 }

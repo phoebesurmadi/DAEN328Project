@@ -12,4 +12,7 @@ In this project we build a complete, modular, and dockerized ETL pipeline of dat
 
 Instructions:
 
+
+Contributions:
+
 ...

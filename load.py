@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+import os
+
 load_dotenv()
 
 POSTGRES_HOST = os.getenv("POSTGRES_HOST")

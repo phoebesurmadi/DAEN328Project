@@ -22,7 +22,7 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 create_table_query = """
-CREATE TABLE IF NOT EXISTS inspection (
+CREATE TABLE IF NOT EXISTS inspection_db (
   inspection_id INTEGER PRIMARY KEY,
   business_name VARCHAR(255),
   facility_type VARCHAR(100),

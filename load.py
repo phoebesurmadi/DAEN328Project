@@ -32,6 +32,8 @@ CREATE TABLE IF NOT EXISTS inspection (
 );
 """
 
+cur.execute(create_table_query)
+
 for index, row in df.iterrows():
   cur.execute(
     "INSERT INTO inspection (inspection_id, business_name, facility_type, risk, address, zip, inspection_date, inspection_type, results, latitude, longitude) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",

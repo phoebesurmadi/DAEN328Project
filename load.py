@@ -18,7 +18,7 @@ cur = conn.cursor()
 
 for index, row in df.iterrows():
   cur.execute(
-    "INSERT INTO trends (keyword, date, trend_score) VALUES (%s, %s, %s)",
+    "INSERT INTO inspection (keyword, date, trend_score) VALUES (%s, %s, %s)",
     (row['keyword'], row['date'], row['trend_score'])
   )
 

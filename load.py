@@ -1,8 +1,10 @@
 from dotenv import load_dotenv
 import os
 import psycopg2
+import pandas as pd
 
-df = pandas.read_csv('DAEN328_Project/data/Messy_Data.csv')
+
+df = pd.read_csv('DAEN328_Project/data/Messy_Data.csv')
 
 load_dotenv()
 

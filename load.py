@@ -8,9 +8,9 @@ POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 
 conn = psycopg2.connect(
   host = POSTGRES_HOST,
-  port = POSTGRES_PORT
-  dbname = POSTGRES_NAME
-  user = POSTGRES_USER
+  port = POSTGRES_PORT,
+  dbname = POSTGRES_NAME,
+  user = POSTGRES_USER,
   password = POSTGRES_PASSWORD
 )
 

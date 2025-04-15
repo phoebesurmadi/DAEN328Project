@@ -18,8 +18,8 @@ cur = conn.cursor()
 
 for index, row in df.iterrows():
   cur.execute(
-    "INSERT INTO inspection (keyword, date, trend_score) VALUES (%s, %s, %s)",
-    (row['keyword'], row['date'], row['trend_score'])
+    "INSERT INTO inspection (inspection_id, business_name, facility_type, risk, address, zip, inspection_date, inspection_type, results, latitude, longitude) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+    (row['inspection_id'], row['business_name'], row['facility_type'], row['risk'], row['address'], row['zip'], row['inspection_date'], row['inspection_type'], row['results'], row['latitude'], row['longitude'])
   )
 
 conn.commit()

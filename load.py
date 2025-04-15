@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS inspection_db (
 
 cur.execute(create_table_query)
 
-for index, row in df.iterrows():
+for index, row in data.iterrows():
   cur.execute(
     "INSERT INTO inspection (inspection_id, business_name, facility_type, risk, address, zip, inspection_date, inspection_type, results, latitude, longitude) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
     (row['inspection_id'], row['business_name'], row['facility_type'], row['risk'], row['address'], row['zip'], row['inspection_date'], row['inspection_type'], row['results'], row['latitude'], row['longitude'])

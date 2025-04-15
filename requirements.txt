@@ -7,8 +7,8 @@ requests # To make HTTP requests and fetch data from APIs
 
 pandas # To store, manipulate, and clean tabular data
 #sqlite3  # To interact with an SQLite database for data storage
-json  # To handle JSON data from APIs
-os # working with operating system functions
+#json  # To handle JSON data from APIs
+#os # working with operating system functions
 
 
 

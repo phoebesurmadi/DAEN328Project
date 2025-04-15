@@ -1,143 +1,150 @@
-# streamlit_app.py
-
 import streamlit as st
 import pandas as pd
-from sqlalchemy import create_engine
-import os
-from dotenv import load_dotenv
 import plotly.express as px
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sqlalchemy import create_engine
+from dotenv import load_dotenv
+import os
 
-# Load environment variables
+# Load env variables
 load_dotenv()
+DB_URL = os.getenv("DATABASE_URL")
 
-# Database credentials
-DB_USER = os.getenv("DB_USER", "postgres")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "password")
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "5432")
-DB_NAME = os.getenv("DB_NAME", "trends_db")
+# Setup
+st.set_page_config(page_title="Chicago Food Inspections", layout="wide")
+st.title("🍽️ Chicago Food Inspections: Deep Dive Dashboard")
 
-# Connect to PostgreSQL
-engine = create_engine(f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
+# Connect to DB
+engine = create_engine(DB_URL)
 
-# Load and cache data
+# Load Data
 @st.cache_data
 def load_data():
-    df = pd.read_sql("SELECT * FROM trends;", engine)
-    df["date"] = pd.to_datetime(df["date"])
-    return df.set_index("date")
+    df = pd.read_sql("SELECT * FROM inspections;", con=engine)
+    df['inspection_date'] = pd.to_datetime(df['inspection_date'])
+    return df
 
 df = load_data()
 
-# App title
-st.title("📊 Future Google Trends Explorer")
+# Filters
+st.sidebar.header("🔎 Filters")
+zip_filter = st.sidebar.multiselect("Zip Code", df["zip"].dropna().unique(), default=df["zip"].dropna().unique())
+risk_filter = st.sidebar.multiselect("Risk Level", df["risk"].dropna().unique(), default=df["risk"].dropna().unique())
+type_filter = st.sidebar.multiselect("Facility Type", df["facility_type"].dropna().unique(), default=df["facility_type"].dropna().unique())
 
-# Available columns (keywords)
-available_keywords = df.columns.tolist()
+df = df[
+    df["zip"].isin(zip_filter) &
+    df["risk"].isin(risk_filter) &
+    df["facility_type"].isin(type_filter)
+]
 
-# Keyword selection (user types one at a time)
-st.subheader("🔤 Enter Keywords (One at a Time)")
-if "selected_keywords" not in st.session_state:
-    st.session_state.selected_keywords = []
+# KPIs
+st.markdown("### 📈 Key Metrics")
+col1, col2, col3, col4 = st.columns(4)
+col1.metric("Total Inspections", len(df))
+col2.metric("Unique Businesses", df['business_name'].nunique())
+col3.metric("Risk Levels", df['risk'].nunique())
+col4.metric("Facility Types", df['facility_type'].nunique())
 
-new_word = st.text_input("Enter a keyword to track:")
+st.divider()
 
-if st.button("➕ Add Keyword"):
-    if new_word:
-        new_word = new_word.strip()
-        if new_word in available_keywords:
-            if new_word not in st.session_state.selected_keywords:
-                if len(st.session_state.selected_keywords) < 4:
-                    st.session_state.selected_keywords.append(new_word)
-                else:
-                    st.warning("You can only track up to 4 keywords.")
-            else:
-                st.warning("Keyword already added.")
-        else:
-            st.error(f"'{new_word}' not found in available keywords. Please check spelling.")
-    else:
-        st.warning("Please type a keyword.")
+# Risk Distribution
+st.subheader("🧯 Risk Category Distribution")
+risk_fig = px.histogram(df, x="risk", color="risk", title="Distribution by Risk Level")
+st.plotly_chart(risk_fig, use_container_width=True)
 
-if st.button("🔁 Clear Keywords"):
-    st.session_state.selected_keywords = []
+# Pie Chart
+risk_pie = px.pie(df, names="risk", title="Risk Level Breakdown", hole=0.4)
+st.plotly_chart(risk_pie, use_container_width=True)
 
-selected_keywords = st.session_state.selected_keywords
-st.write("**Current selection:**", selected_keywords)
+# Inspection Results Breakdown
+st.subheader("📋 Inspection Results Breakdown")
+result_counts = df["results"].value_counts().reset_index()
+result_fig = px.bar(result_counts, x='index', y='results', color='index', title="Inspection Results Count")
+st.plotly_chart(result_fig, use_container_width=True)
 
-# Date range selection
-min_date, max_date = df.index.min(), df.index.max()
-date_range = st.date_input("Select date range", [min_date, max_date])
+# Monthly Trend
+st.subheader("📅 Monthly Trend of Inspections")
+monthly = df.groupby(df['inspection_date'].dt.to_period("M")).size().reset_index(name='count')
+monthly["inspection_date"] = monthly["inspection_date"].dt.to_timestamp()
+trend_fig = px.line(monthly, x="inspection_date", y="count", title="Monthly Number of Inspections")
+st.plotly_chart(trend_fig, use_container_width=True)
 
-# Filter data
-if selected_keywords:
-    filtered = df.loc[date_range[0]:date_range[1], selected_keywords]
+# Violation Keyword Frequency
+st.subheader("🚨 Most Common Violations (Keywords)")
+if 'violation_description' in df.columns:
+    violations = df['violation_description'].dropna().str.lower().str.split('. ')
+    keywords = pd.Series([item for sublist in violations for item in sublist])
+    top_violations = keywords.value_counts().head(10)
+    fig, ax = plt.subplots()
+    top_violations.plot(kind='barh', ax=ax)
+    ax.set_title("Top 10 Violation Phrases")
+    ax.invert_yaxis()
+    st.pyplot(fig)
+
+# Facility Type vs Results Heatmap
+st.subheader("🏪 Facility Type vs Results")
+pivot = df.pivot_table(index="facility_type", columns="results", aggfunc="size", fill_value=0)
+fig, ax = plt.subplots(figsize=(12, 8))
+sns.heatmap(pivot, annot=True, fmt="d", cmap="Blues", ax=ax)
+plt.title("Facility Type vs Results")
+st.pyplot(fig)
+
+# Zip vs Results
+st.subheader("📍 ZIP Code vs Results Heatmap")
+pivot2 = df.pivot_table(index="zip", columns="results", aggfunc="size", fill_value=0)
+fig2, ax2 = plt.subplots(figsize=(12, 8))
+sns.heatmap(pivot2, annot=True, fmt="d", cmap="Greens", ax=ax2)
+plt.title("Zip Code vs Result Count")
+st.pyplot(fig2)
+
+# Time between inspections
+st.subheader("⏱️ Time Between Inspections")
+biz_time = df.sort_values(["business_name", "inspection_date"]).copy()
+biz_time["prev_date"] = biz_time.groupby("business_name")["inspection_date"].shift()
+biz_time["days_between"] = (biz_time["inspection_date"] - biz_time["prev_date"]).dt.days
+
+fig3, ax3 = plt.subplots()
+sns.boxplot(data=biz_time.dropna(subset=["days_between"]), x="risk", y="days_between", ax=ax3)
+plt.title("Days Between Inspections by Risk Level")
+st.pyplot(fig3)
+
+# Map of Recent Inspections
+st.subheader("🗺️ Recent Inspection Locations")
+recent_df = df.dropna(subset=["latitude", "longitude"]).sort_values("inspection_date", ascending=False).head(500)
+map_fig = px.scatter_mapbox(
+    recent_df,
+    lat="latitude", lon="longitude",
+    color="results",
+    hover_name="business_name",
+    hover_data=["inspection_date", "facility_type", "risk"],
+    zoom=10,
+    height=500
+)
+map_fig.update_layout(mapbox_style="carto-positron")
+st.plotly_chart(map_fig, use_container_width=True)
+
+# Interactive Business Timeline
+st.subheader("🏢 Business Inspection History (Interactive)")
+biz_list = sorted(df['business_name'].unique())
+selected_biz = st.selectbox("Select Business", biz_list)
+biz_df = df[df['business_name'] == selected_biz].sort_values("inspection_date")
+
+if not biz_df.empty:
+    timeline = px.timeline(
+        biz_df,
+        x_start="inspection_date", x_end="inspection_date",
+        y="inspection_type", color="results",
+        hover_data=["risk", "facility_type", "zip"],
+        title=f"Inspection Timeline for {selected_biz}"
+    )
+    timeline.update_yaxes(categoryorder="total ascending")
+    st.plotly_chart(timeline, use_container_width=True)
 else:
-    st.warning("Please select at least one keyword.")
-    st.stop()
+    st.info("No inspections available for this business.")
 
-# Visualizations for 1 keyword
-if len(selected_keywords) == 1:
-    kw = selected_keywords[0]
-    st.header(f"📈 Deep Dive: {kw}")
+# Data Table
+st.subheader("📄 Explore Cleaned Data")
+st.dataframe(df)
 
-    # 1. Line chart
-    st.subheader("1. Trend Over Time")
-    fig1 = px.line(filtered, y=kw, title=f"{kw} Search Trend Over Time")
-    st.plotly_chart(fig1)
-
-    # 2. Rolling average
-    st.subheader("2. 7-Day Rolling Average")
-    rolling = filtered[kw].rolling(window=7).mean()
-    st.line_chart(rolling)
-
-    # 3. Area chart (cumulative)
-    st.subheader("3. Cumulative Interest")
-    st.area_chart(filtered[kw].cumsum())
-
-    # 4. Box plot by week
-    st.subheader("4. Weekly Popularity Distribution")
-    temp = filtered.copy()
-    temp["week"] = temp.index.to_period("W")
-    fig4 = px.box(temp, x="week", y=kw, title=f"Weekly Interest for {kw}")
-    st.plotly_chart(fig4)
-
-    # 5. Heatmap by day of week
-    st.subheader("5. Average Popularity by Day of Week")
-    temp["day"] = temp.index.day_name()
-    heat_avg = temp.groupby("day")[kw].mean().reindex([
-        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
-    ])
-    st.bar_chart(heat_avg)
-
-# Visualizations for 2–4 keywords
-elif 2 <= len(selected_keywords) <= 4:
-    st.header("📊 Multi-Keyword Comparison")
-
-    # 1. Line chart
-    st.subheader("1. Trend Over Time")
-    st.line_chart(filtered)
-
-    # 2. Average popularity bar
-    st.subheader("2. Average Popularity per Keyword")
-    avg_pop = filtered.mean().reset_index()
-    avg_pop.columns = ["keyword", "average"]
-    fig2 = px.bar(avg_pop, x="keyword", y="average", title="Average Interest")
-    st.plotly_chart(fig2)
-
-    # 3. Cumulative interest
-    st.subheader("3. Cumulative Interest Comparison")
-    st.line_chart(filtered.cumsum())
-
-    # 4. Distribution (box plot)
-    st.subheader("4. Popularity Distribution")
-    box_df = filtered.reset_index().melt(id_vars="date", var_name="keyword", value_name="popularity")
-    fig4 = px.box(box_df, x="keyword", y="popularity", title="Interest Distribution")
-    st.plotly_chart(fig4)
-
-    # 5. Correlation heatmap
-    st.subheader("5. Keyword Correlation")
-    st.dataframe(filtered.corr().style.background_gradient(cmap="YlGnBu"))
-
-# More than 4?
-else:
-    st.warning("Please select no more than 4 keywords for analysis.")

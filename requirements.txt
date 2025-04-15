@@ -15,12 +15,13 @@ os # working with operating system functions
 # streamlit
 
 streamlit
+pandas
 psycopg2
 matplotlib
 seaborn
 sqlalchemy
 plotly
-
+python-dotenv
 
 # dockerizing (?)
 

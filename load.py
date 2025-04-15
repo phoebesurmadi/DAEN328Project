@@ -16,6 +16,22 @@ conn = psycopg2.connect(
 
 cur = conn.cursor()
 
+create_table_query = """
+CREATE TABLE IF NOT EXISTS inspection (
+  inspection_id INTEGER PRIMARY KEY,
+  business_name VARCHAR(255),
+  facility_type VARCHAR(100),
+  risk VARCHAR(50),
+  address VARCHAR(255),
+  zip VARCHAR(10),
+  inspection_date DATE,
+  inspection_type VARCHAR(100),
+  results VARCHAR(50),
+  latitude FLOAT,
+  longitude FLOAT
+);
+"""
+
 for index, row in df.iterrows():
   cur.execute(
     "INSERT INTO inspection (inspection_id, business_name, facility_type, risk, address, zip, inspection_date, inspection_type, results, latitude, longitude) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",

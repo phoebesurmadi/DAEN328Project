@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import os
 
 # Load env variables
-load_dotenv(dotenv_path=".env.sample")
+load_dotenv()
 DB_URL = os.getenv("DB_URL")
 
 # Setup
@@ -60,8 +60,20 @@ st.plotly_chart(risk_pie, use_container_width=True)
 
 # Inspection Results Breakdown
 st.subheader("📋 Inspection Results Breakdown")
+
+# Count the number of each inspection result and rename columns
 result_counts = df["results"].value_counts().reset_index()
-result_fig = px.bar(result_counts, x='index', y='results', color='index', title="Inspection Results Count")
+result_counts.columns = ["result", "count"]
+
+# Create bar chart
+result_fig = px.bar(
+    result_counts,
+    x='result',
+    y='count',
+    color='result',
+    title="Inspection Results Count"
+)
+
 st.plotly_chart(result_fig, use_container_width=True)
 
 # Monthly Trend
@@ -101,8 +113,8 @@ st.pyplot(fig2)
 
 # Time between inspections
 st.subheader("⏱️ Time Between Inspections")
-biz_time = df.sort_values(["business_name", "inspection_date"]).copy()
-biz_time["prev_date"] = biz_time.groupby("business_name")["inspection_date"].shift()
+biz_time = df.sort_values(["dba_name", "inspection_date"]).copy()
+biz_time["prev_date"] = biz_time.groupby("dba_name")["inspection_date"].shift()
 biz_time["days_between"] = (biz_time["inspection_date"] - biz_time["prev_date"]).dt.days
 
 fig3, ax3 = plt.subplots()
@@ -117,7 +129,7 @@ map_fig = px.scatter_mapbox(
     recent_df,
     lat="latitude", lon="longitude",
     color="results",
-    hover_name="business_name",
+    hover_name="dba_name",
     hover_data=["inspection_date", "facility_type", "risk"],
     zoom=10,
     height=500
@@ -127,9 +139,9 @@ st.plotly_chart(map_fig, use_container_width=True)
 
 # Interactive Business Timeline
 st.subheader("🏢 Business Inspection History (Interactive)")
-biz_list = sorted(df['business_name'].unique())
+biz_list = sorted(df['dba_name'].unique())
 selected_biz = st.selectbox("Select Business", biz_list)
-biz_df = df[df['business_name'] == selected_biz].sort_values("inspection_date")
+biz_df = df[df['dba_name'] == selected_biz].sort_values("inspection_date")
 
 if not biz_df.empty:
     timeline = px.timeline(
@@ -147,4 +159,3 @@ else:
 # Data Table
 st.subheader("📄 Explore Cleaned Data")
 st.dataframe(df)
-

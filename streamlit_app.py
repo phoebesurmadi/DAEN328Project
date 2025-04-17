@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import os
 
 # Load env variables
-load_dotenv()
+load_dotenv(dotenv_path=".env.sample")
 DB_URL = os.getenv("DB_URL")
 
 # Setup

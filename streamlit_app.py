@@ -21,7 +21,7 @@ engine = create_engine(DB_URL)
 # Load Data
 @st.cache_data
 def load_data():
-    df = pd.read_sql("SELECT * FROM inspections;", con=engine)
+    df = pd.read_sql("SELECT * FROM inspections_db;", con=engine)
     df['inspection_date'] = pd.to_datetime(df['inspection_date'])
     return df
 
@@ -43,7 +43,7 @@ df = df[
 st.markdown("### 📈 Key Metrics")
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("Total Inspections", len(df))
-col2.metric("Unique Businesses", df['business_name'].nunique())
+col2.metric("Unique Businesses", df['dba_name'].nunique())
 col3.metric("Risk Levels", df['risk'].nunique())
 col4.metric("Facility Types", df['facility_type'].nunique())
 

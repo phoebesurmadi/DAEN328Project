@@ -21,7 +21,7 @@ engine = create_engine(DB_URL)
 # Load Data
 @st.cache_data
 def load_data():
-    df = pd.read_sql("SELECT * FROM inspections_db;", con=engine)
+    df = pd.read_sql("SELECT * FROM inspection_db;", con=engine)
     df['inspection_date'] = pd.to_datetime(df['inspection_date'])
     return df
 

@@ -44,9 +44,21 @@ cur.execute(create_table_query)
 
 for index, row in df.iterrows():
   cur.execute(
-    "INSERT INTO inspection_db (inspection_id, dba_name, facility_type, risk, address, zip, inspection_date, inspection_type, results, latitude, longitude) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-    (row['inspection_id'], row['dba_name'], row['facility_type'], row['risk'], row['address'], row['zip'], row['inspection_date'], row['inspection_type'], row['results'], row['latitude'], row['longitude'])
+    """
+    INSERT INTO inspection_db (
+      inspection_id, dba_name, facility_type, risk, address, zip,
+      inspection_date, inspection_type, results, latitude, longitude
+    )
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    ON CONFLICT (inspection_id) DO NOTHING
+    """,
+    (
+      row['inspection_id'], row['dba_name'], row['facility_type'], row['risk'],
+      row['address'], row['zip'], row['inspection_date'], row['inspection_type'],
+      row['results'], row['latitude'], row['longitude']
+    )
   )
+
 
 conn.commit()
 cur.close()

@@ -10,7 +10,7 @@ data = pd.read_csv(input_path)
 
 def clean(df):
     df['inspection_date'] = pd.to_datetime(df['inspection_date']).dt.strftime('%Y-%m-%d')
-    df = df.drop(columns=['aka_name', 'license_', 'city', 'state', 'violations', 'location'])
+    df = df.drop(columns=['dba_name', 'license_', 'city', 'state', 'violations', 'location'])
     df = df[df['results'] != 'No Entry']
     df = df.dropna()
     return df

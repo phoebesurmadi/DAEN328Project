@@ -9,7 +9,7 @@ import os
 
 # Load env variables
 load_dotenv()
-DB_URL = os.getenv("DATABASE_URL")
+DB_URL = os.getenv("DB_URL")
 
 # Setup
 st.set_page_config(page_title="Chicago Food Inspections", layout="wide")

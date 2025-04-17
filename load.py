@@ -4,7 +4,7 @@ import psycopg2
 import pandas as pd
 
 
-df = pd.read_csv('DAEN328_Project/data/Messy_Data.csv')
+df = pd.read_csv('DAEN328_Project/data/Clean_Data.csv')
 
 load_dotenv()
 

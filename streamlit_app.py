@@ -137,21 +137,38 @@ map_fig = px.scatter_mapbox(
 map_fig.update_layout(mapbox_style="carto-positron")
 st.plotly_chart(map_fig, use_container_width=True)
 
-# Interactive Business Timeline
+# 🏢 Business Inspection History (Interactive)
 st.subheader("🏢 Business Inspection History (Interactive)")
-biz_list = sorted(df['dba_name'].unique())
-selected_biz = st.selectbox("Select Business", biz_list)
-biz_df = df[df['dba_name'] == selected_biz].sort_values("inspection_date")
 
+# Ensure valid date parsing
+df["inspection_date"] = pd.to_datetime(df["inspection_date"], errors="coerce")
+
+# Remove rows with null/invalid dates
+df = df.dropna(subset=["inspection_date"])
+
+# Sort and limit to the most recent 1000
+recent_df = df.sort_values("inspection_date", ascending=False).head(1000)
+
+# Create business dropdown from filtered recent data
+biz_list = sorted(recent_df['dba_name'].dropna().unique())
+selected_biz = st.selectbox("Select Business", biz_list)
+
+# Filter just that business
+biz_df = recent_df[recent_df['dba_name'] == selected_biz].sort_values("inspection_date")
+
+# Plot if there’s valid data
 if not biz_df.empty:
     timeline = px.timeline(
         biz_df,
-        x_start="inspection_date", x_end="inspection_date",
-        y="inspection_type", color="results",
+        x_start="inspection_date",
+        x_end="inspection_date",  # plots a single point per inspection
+        y="inspection_type",
+        color="results",
         hover_data=["risk", "facility_type", "zip"],
         title=f"Inspection Timeline for {selected_biz}"
     )
     timeline.update_yaxes(categoryorder="total ascending")
+    timeline.update_layout(xaxis_title="Date", yaxis_title="Inspection Type")
     st.plotly_chart(timeline, use_container_width=True)
 else:
     st.info("No inspections available for this business.")

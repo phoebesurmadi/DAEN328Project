@@ -168,7 +168,7 @@ ax[0, 1].set_ylabel("Counts", size=18)
 
 # Scatter for "Pass"
 sns.scatterplot(
-    lat="latitude", lon="longitude",,
+    lat="latitude", lon="longitude",
     hue="risk", data=df[df["results"] == "pass"],
     ax=ax[1, 0]
 )

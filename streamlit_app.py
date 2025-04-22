@@ -8,8 +8,7 @@ from dotenv import load_dotenv
 import os
 
 # Load env variables
-load_dotenv(dotenv_path=".env.sample")
-DB_URL = os.getenv("DB_URL")
+load_dotenv()
 
 # Setup
 st.set_page_config(page_title="Chicago Food Inspections", layout="wide")

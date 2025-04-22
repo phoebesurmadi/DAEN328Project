@@ -113,7 +113,7 @@ ax[0, 0].set_ylabel("")
 
 # Restaurant scatterplot
 sns.scatterplot(
-    x="longitude", y="latitude",
+    lat="latitude", lon="longitude",
     hue="risk", data=df[df['facility_type'] == 'restaurant'],
     ax=ax[0, 1]
 )
@@ -123,7 +123,7 @@ ax[0, 1].set_ylabel("Latitude")
 
 # Grocery Store scatterplot
 sns.scatterplot(
-    x="longitude", y="latitude",
+    lat="latitude", lon="longitude",
     hue="risk", data=df[df['facility_type'] == 'grocery store'],
     ax=ax[1, 0]
 )
@@ -133,7 +133,7 @@ ax[1, 0].set_ylabel("Latitude")
 
 # School scatterplot
 sns.scatterplot(
-    x="longitude", y="latitude",
+    lat="latitude", lon="longitude",
     hue="risk", data=df[df['facility_type'] == 'school'],
     ax=ax[1, 1]
 )
@@ -168,7 +168,7 @@ ax[0, 1].set_ylabel("Counts", size=18)
 
 # Scatter for "Pass"
 sns.scatterplot(
-    x="longitude", y="latitude",
+    lat="latitude", lon="longitude",,
     hue="risk", data=df[df["results"] == "pass"],
     ax=ax[1, 0]
 )
@@ -178,7 +178,7 @@ ax[1, 0].set_ylabel("Latitude")
 
 # Scatter for "Fail"
 sns.scatterplot(
-    x="longitude", y="latitude",
+    lat="latitude", lon="longitude",
     hue="risk", data=df[df["results"] == "fail"],
     ax=ax[1, 1]
 )

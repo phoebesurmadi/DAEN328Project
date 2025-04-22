@@ -143,6 +143,51 @@ ax[1, 1].set_ylabel("Latitude")
 
 st.pyplot(fig)
 
+# 2.4 Visualization for Results of Inspection
+st.subheader("📑 Inspection Result Trends")
+
+fig, ax = plt.subplots(2, 2, figsize=(20, 16))
+
+# Bar chart for overall result counts
+result_counts = df["results"].value_counts()
+sns.barplot(x=result_counts.index, y=result_counts.values, ax=ax[0, 0])
+ax[0, 0].set_title("Counts of Inspection Results", size=20)
+ax[0, 0].set_ylabel("Counts", size=18)
+ax[0, 0].set_xlabel("")
+
+# Add 'year' column for time-based grouping
+df["year"] = df["inspection_date"].dt.year
+
+# Group by results and year
+results_by_year = df.groupby(["results", "year"])["inspection_id"].count().unstack("results")
+results_by_year.plot(kind="bar", ax=ax[0, 1])
+ax[0, 1].tick_params(axis="x", labelrotation=360)
+ax[0, 1].legend(loc="upper left", fontsize=14, bbox_to_anchor=(1.15, 0.75))
+ax[0, 1].set_title("Counts of Inspection Results by Year", size=20)
+ax[0, 1].set_ylabel("Counts", size=18)
+
+# Scatter for "Pass"
+sns.scatterplot(
+    x="longitude", y="latitude",
+    hue="risk", data=df[df["results"] == "pass"],
+    ax=ax[1, 0]
+)
+ax[1, 0].set_title("Geographic Distribution of Passed Inspections", size=20)
+ax[1, 0].set_xlabel("Longitude")
+ax[1, 0].set_ylabel("Latitude")
+
+# Scatter for "Fail"
+sns.scatterplot(
+    x="longitude", y="latitude",
+    hue="risk", data=df[df["results"] == "fail"],
+    ax=ax[1, 1]
+)
+ax[1, 1].set_title("Geographic Distribution of Failed Inspections", size=20)
+ax[1, 1].set_xlabel("Longitude")
+ax[1, 1].set_ylabel("Latitude")
+
+st.pyplot(fig)
+
 # Time between inspections
 st.subheader("⏱️ Time Between Inspections")
 biz_time = df.sort_values(["dba_name", "inspection_date"]).copy()

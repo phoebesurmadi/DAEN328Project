@@ -6,6 +6,7 @@ import seaborn as sns
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import os
+pip install folium
 
 load_dotenv()
 DB_URL = os.getenv("DB_URL")

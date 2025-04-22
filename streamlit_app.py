@@ -17,14 +17,12 @@ st.title("🍽️ Chicago Food Inspections: Deep Dive Dashboard")
 # Connect to DB
 engine = create_engine(DB_URL)
 
-
 # Load Data
 @st.cache_data
 def load_data():
     df = pd.read_sql("SELECT * FROM inspection_db;", con=engine)
     df['inspection_date'] = pd.to_datetime(df['inspection_date'])
     return df
-
 df = load_data()
 
 # Filters
@@ -46,13 +44,12 @@ col1.metric("Total Inspections", len(df))
 col2.metric("Unique Businesses", df['dba_name'].nunique())
 col3.metric("Risk Levels", df['risk'].nunique())
 col4.metric("Facility Types", df['facility_type'].nunique())
-
 st.divider()
 
 # Risk Distribution
-st.subheader("🧯 Risk Category Distribution")
-risk_fig = px.histogram(df, x="risk", color="risk", title="Distribution by Risk Level")
-st.plotly_chart(risk_fig, use_container_width=True)
+# st.subheader("🧯 Risk Category Distribution")
+# risk_fig = px.histogram(df, x="risk", color="risk", title="Distribution by Risk Level")
+# st.plotly_chart(risk_fig, use_container_width=True)
 
 # Pie Chart
 risk_pie = px.pie(df, names="risk", title="Risk Level Breakdown", hole=0.4)
@@ -127,6 +124,109 @@ for _, row in risk1_df.iterrows():
 
 # Display the map in Streamlit
 st_folium(m, width=700)
+# 2.2.2 Visualization for Medium Risk
+st.subheader("Visualization for Risk 2 (Medium)")
+
+# Filter data for Risk 2
+data_risk2 = df[df['risk'] == 'Risk 2 (Medium)']
+
+# Bar Chart: Top 10 Facility Types
+fig3, ax3 = plt.subplots(figsize=(10, 6))
+sns.barplot(
+    x=data_risk2['facility_type'].value_counts().head(10).values,
+    y=data_risk2['facility_type'].value_counts().head(10).index,
+    ax=ax3
+)
+ax3.set_title("Top 10 Facility Types by Count (Risk 2)", fontsize=16)
+ax3.set_xlabel("Count")
+ax3.set_ylabel("Facility Type")
+st.pyplot(fig3)
+
+# Pie Chart: Facility Type Distribution
+count2 = data_risk2['facility_type'].value_counts()
+top_types2 = count2.head(10)
+others2 = count2.sum() - top_types2.sum()
+labels2 = list(top_types2.index) + ['Other']
+sizes2 = list(top_types2.values) + [others2]
+colors2 = sns.color_palette('pastel', len(labels2))
+
+fig4, ax4 = plt.subplots()
+ax4.pie(sizes2, labels=labels2, colors=colors2, autopct='%1.1f%%', startangle=140)
+ax4.axis('equal')
+ax4.set_title("Facility Type Distribution (Risk 2)")
+st.pyplot(fig4)
+
+# Map: Locations of Risk 2 Facilities
+st.subheader("Map of Risk 2 (Medium) Facilities")
+
+# Ensure latitude and longitude are numeric
+data_risk2 = data_risk2.dropna(subset=['latitude', 'longitude'])
+data_risk2['latitude'] = pd.to_numeric(data_risk2['latitude'], errors='coerce')
+data_risk2['longitude'] = pd.to_numeric(data_risk2['longitude'], errors='coerce')
+data_risk2 = data_risk2.dropna(subset=['latitude', 'longitude'])
+
+# Create Folium map
+m2 = folium.Map(location=[data_risk2['latitude'].mean(), data_risk2['longitude'].mean()], zoom_start=12)
+marker_cluster2 = MarkerCluster().add_to(m2)
+
+for idx, row in data_risk2.iterrows():
+    folium.Marker(
+        location=[row['latitude'], row['longitude']],
+        popup=row['dba_name']
+    ).add_to(marker_cluster2)
+
+folium_static(m2)
+import folium
+from folium.plugins import MarkerCluster
+from streamlit_folium import st_folium
+
+# Define a function to create visualizations for each risk level
+def visualize_risk_level(df, risk_level, risk_label):
+    st.subheader(f"📌 {risk_label} Inspections Overview")
+
+    # Filter data for the specified risk level
+    risk_data = df[df['risk'] == risk_level]
+
+    # Bar Chart: Top 10 Facility Types
+    st.markdown("**Top 10 Facility Types**")
+    top_facilities = risk_data['facility_type'].value_counts().nlargest(10)
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.barplot(x=top_facilities.values, y=top_facilities.index, ax=ax)
+    ax.set_xlabel("Number of Inspections")
+    ax.set_ylabel("Facility Type")
+    st.pyplot(fig)
+
+    # Pie Chart: Facility Type Distribution
+    st.markdown("**Facility Type Distribution**")
+    facility_counts = risk_data['facility_type'].value_counts()
+    top_facilities = facility_counts.nlargest(10)
+    other_count = facility_counts.sum() - top_facilities.sum()
+    facility_labels = list(top_facilities.index) + ['Other']
+    facility_sizes = list(top_facilities.values) + [other_count]
+    fig, ax = plt.subplots()
+    ax.pie(facility_sizes, labels=facility_labels, autopct='%1.1f%%', startangle=140)
+    ax.axis('equal')
+    st.pyplot(fig)
+
+    # Map: Inspection Locations
+    st.markdown("**Inspection Locations Map**")
+    map_data = risk_data.dropna(subset=['latitude', 'longitude']).head(2000)
+    if not map_data.empty:
+        m = folium.Map(location=[map_data['latitude'].mean(), map_data['longitude'].mean()], zoom_start=12)
+        marker_cluster = MarkerCluster().add_to(m)
+        for idx, row in map_data.iterrows():
+            folium.Marker(
+                location=[row['latitude'], row['longitude']],
+                popup=row['dba_name']
+            ).add_to(marker_cluster)
+        st_folium(m, width=700, height=500)
+    else:
+        st.info("No location data available for this risk level.")
+
+# Call the function for each risk level
+visualize_risk_level(df, 'Risk 1 (High)', 'Risk 1 (High)')
+visualize_risk_level(df, 'Risk 2 (Medium)', 'Risk 2 (Medium)')
+visualize_risk_level(df, 'Risk 3 (Low)', 'Risk 3 (Low)')
 
 
 #2.3 visualization for facility type
@@ -166,7 +266,6 @@ st.pyplot(fig)
 
 #2.4 visualization
 st.subheader("Visualization for Results of Inspection")
-
 fig, ax = plt.subplots(2, 2, figsize=(20, 16))
 
 # Counts of Inspection Results

@@ -81,101 +81,6 @@ sns.heatmap(pivot, annot=True, fmt="d", cmap="Blues", ax=ax)
 plt.title("Facility Type vs Results")
 st.pyplot(fig)
 
-# 2.2.1 Visualization for Risk 1 (High)
-st.subheader("⚠️ High-Risk Facility Analysis")
-
-# Filter data for Risk 1 (High)
-risk1_df = df[df['risk'] == 'Risk 1 (High)']
-
-# Top Facility Types in Risk 1
-fig, ax = plt.subplots(figsize=(10, 6))
-top_risk1_facilities = risk1_df['facility_type'].value_counts().head(10)
-sns.barplot(x=top_risk1_facilities.values, y=top_risk1_facilities.index, ax=ax)
-ax.set_title("Top Facility Types in Risk 1 (High)", fontsize=16)
-ax.set_xlabel("Number of Inspections")
-ax.set_ylabel("Facility Type")
-st.pyplot(fig)
-
-# Pie Chart of Facility Types in Risk 1
-facility_counts = risk1_df['facility_type'].value_counts()
-top_facilities = facility_counts.head(10)
-other_count = facility_counts[10:].sum()
-facility_labels = list(top_facilities.index) + ['Other']
-facility_sizes = list(top_facilities.values) + [other_count]
-fig, ax = plt.subplots(figsize=(8, 8))
-ax.pie(facility_sizes, labels=facility_labels, autopct='%1.1f%%', startangle=140)
-ax.set_title("Distribution of Facility Types in Risk 1 (High)", fontsize=16)
-st.pyplot(fig)
-
-# Map of Risk 1 Facilities
-import folium
-from streamlit_folium import st_folium
-
-# Create a folium map centered around the mean coordinates
-m = folium.Map(location=[risk1_df['latitude'].mean(), risk1_df['longitude'].mean()], zoom_start=11)
-
-# Add markers to the map
-for _, row in risk1_df.iterrows():
-    folium.Marker(
-        location=[row['latitude'], row['longitude']],
-        popup=row['dba_name'],
-        icon=folium.Icon(color='red')
-    ).add_to(m)
-
-# Display the map in Streamlit
-st_folium(m, width=700)
-# 2.2.2 Visualization for Medium Risk
-st.subheader("Visualization for Risk 2 (Medium)")
-
-# Filter data for Risk 2
-data_risk2 = df[df['risk'] == 'Risk 2 (Medium)']
-
-# Bar Chart: Top 10 Facility Types
-fig3, ax3 = plt.subplots(figsize=(10, 6))
-sns.barplot(
-    x=data_risk2['facility_type'].value_counts().head(10).values,
-    y=data_risk2['facility_type'].value_counts().head(10).index,
-    ax=ax3
-)
-ax3.set_title("Top 10 Facility Types by Count (Risk 2)", fontsize=16)
-ax3.set_xlabel("Count")
-ax3.set_ylabel("Facility Type")
-st.pyplot(fig3)
-
-# Pie Chart: Facility Type Distribution
-count2 = data_risk2['facility_type'].value_counts()
-top_types2 = count2.head(10)
-others2 = count2.sum() - top_types2.sum()
-labels2 = list(top_types2.index) + ['Other']
-sizes2 = list(top_types2.values) + [others2]
-colors2 = sns.color_palette('pastel', len(labels2))
-
-fig4, ax4 = plt.subplots()
-ax4.pie(sizes2, labels=labels2, colors=colors2, autopct='%1.1f%%', startangle=140)
-ax4.axis('equal')
-ax4.set_title("Facility Type Distribution (Risk 2)")
-st.pyplot(fig4)
-
-# Map: Locations of Risk 2 Facilities
-st.subheader("Map of Risk 2 (Medium) Facilities")
-
-# Ensure latitude and longitude are numeric
-data_risk2 = data_risk2.dropna(subset=['latitude', 'longitude'])
-data_risk2['latitude'] = pd.to_numeric(data_risk2['latitude'], errors='coerce')
-data_risk2['longitude'] = pd.to_numeric(data_risk2['longitude'], errors='coerce')
-data_risk2 = data_risk2.dropna(subset=['latitude', 'longitude'])
-
-# Create Folium map
-m2 = folium.Map(location=[data_risk2['latitude'].mean(), data_risk2['longitude'].mean()], zoom_start=12)
-marker_cluster2 = MarkerCluster().add_to(m2)
-
-for idx, row in data_risk2.iterrows():
-    folium.Marker(
-        location=[row['latitude'], row['longitude']],
-        popup=row['dba_name']
-    ).add_to(marker_cluster2)
-
-folium_static(m2)
 import folium
 from folium.plugins import MarkerCluster
 from streamlit_folium import st_folium
@@ -227,7 +132,6 @@ def visualize_risk_level(df, risk_level, risk_label):
 visualize_risk_level(df, 'Risk 1 (High)', 'Risk 1 (High)')
 visualize_risk_level(df, 'Risk 2 (Medium)', 'Risk 2 (Medium)')
 visualize_risk_level(df, 'Risk 3 (Low)', 'Risk 3 (Low)')
-
 
 #2.3 visualization for facility type
 st.subheader("Visualization for Facility Type")

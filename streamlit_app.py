@@ -99,6 +99,50 @@ sns.heatmap(pivot2, annot=True, fmt="d", cmap="Greens", ax=ax2)
 plt.title("Zip Code vs Result Count")
 st.pyplot(fig2)
 
+# 2.3 Visualization for Facility Type
+st.subheader("🏬 Facility Type Analysis")
+
+fig, ax = plt.subplots(2, 2, figsize=(20, 16))
+
+# Top 10 facility types
+top_facilities = df['facility_type'].value_counts().head(10)
+sns.barplot(x=top_facilities.values, y=top_facilities.index, ax=ax[0, 0])
+ax[0, 0].set_title("Top 10 Facility Types by Count of Inspections", size=20)
+ax[0, 0].set_xlabel("Counts", size=18)
+ax[0, 0].set_ylabel("")
+
+# Restaurant scatterplot
+sns.scatterplot(
+    x="longitude", y="latitude",
+    hue="risk", data=df[df['facility_type'] == 'restaurant'],
+    ax=ax[0, 1]
+)
+ax[0, 1].set_title("Inspections for Restaurants", size=20)
+ax[0, 1].set_xlabel("Longitude")
+ax[0, 1].set_ylabel("Latitude")
+
+# Grocery Store scatterplot
+sns.scatterplot(
+    x="longitude", y="latitude",
+    hue="risk", data=df[df['facility_type'] == 'grocery store'],
+    ax=ax[1, 0]
+)
+ax[1, 0].set_title("Inspections for Grocery Stores", size=20)
+ax[1, 0].set_xlabel("Longitude")
+ax[1, 0].set_ylabel("Latitude")
+
+# School scatterplot
+sns.scatterplot(
+    x="longitude", y="latitude",
+    hue="risk", data=df[df['facility_type'] == 'school'],
+    ax=ax[1, 1]
+)
+ax[1, 1].set_title("Inspections for Schools", size=20)
+ax[1, 1].set_xlabel("Longitude")
+ax[1, 1].set_ylabel("Latitude")
+
+st.pyplot(fig)
+
 # Time between inspections
 st.subheader("⏱️ Time Between Inspections")
 biz_time = df.sort_values(["dba_name", "inspection_date"]).copy()

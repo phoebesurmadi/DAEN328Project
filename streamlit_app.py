@@ -26,16 +26,16 @@ def load_data():
 df = load_data()
 
 # Filters
-st.sidebar.header("🔎 Filters")
-zip_filter = st.sidebar.multiselect("Zip Code", df["zip"].dropna().unique(), default=df["zip"].dropna().unique())
-risk_filter = st.sidebar.multiselect("Risk Level", df["risk"].dropna().unique(), default=df["risk"].dropna().unique())
-type_filter = st.sidebar.multiselect("Facility Type", df["facility_type"].dropna().unique(), default=df["facility_type"].dropna().unique())
+#st.sidebar.header("🔎 Filters")
+#zip_filter = st.sidebar.multiselect("Zip Code", df["zip"].dropna().unique(), default=df["zip"].dropna().unique())
+#risk_filter = st.sidebar.multiselect("Risk Level", df["risk"].dropna().unique(), default=df["risk"].dropna().unique())
+#type_filter = st.sidebar.multiselect("Facility Type", df["facility_type"].dropna().unique(), default=df["facility_type"].dropna().unique())
 
-df = df[
-    df["zip"].isin(zip_filter) &
-    df["risk"].isin(risk_filter) &
-    df["facility_type"].isin(type_filter)
-]
+#df = df[
+#    df["zip"].isin(zip_filter) &
+#    df["risk"].isin(risk_filter) &
+#    df["facility_type"].isin(type_filter)
+#]
 
 # KPIs
 st.markdown("### 📈 Key Metrics")

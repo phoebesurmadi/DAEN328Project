@@ -76,13 +76,6 @@ result_fig = px.bar(
 
 st.plotly_chart(result_fig, use_container_width=True)
 
-# Monthly Trend
-st.subheader("📅 Monthly Trend of Inspections")
-monthly = df.groupby(df['inspection_date'].dt.to_period("M")).size().reset_index(name='count')
-monthly["inspection_date"] = monthly["inspection_date"].dt.to_timestamp()
-trend_fig = px.line(monthly, x="inspection_date", y="count", title="Monthly Number of Inspections")
-st.plotly_chart(trend_fig, use_container_width=True)
-
 # Facility Type vs Results Heatmap
 st.subheader("🏪 Facility Type vs Results")
 pivot = df.pivot_table(index="facility_type", columns="results", aggfunc="size", fill_value=0)
@@ -91,16 +84,53 @@ sns.heatmap(pivot, annot=True, fmt="d", cmap="Blues", ax=ax)
 plt.title("Facility Type vs Results")
 st.pyplot(fig)
 
-# Zip vs Results
-st.subheader("📍 ZIP Code vs Results Heatmap")
-pivot2 = df.pivot_table(index="zip", columns="results", aggfunc="size", fill_value=0)
-fig2, ax2 = plt.subplots(figsize=(12, 8))
-sns.heatmap(pivot2, annot=True, fmt="d", cmap="Greens", ax=ax2)
-plt.title("Zip Code vs Result Count")
-st.pyplot(fig2)
+# 2.2.1 Visualization for Risk 1 (High)
+st.subheader("⚠️ High-Risk Facility Analysis")
+
+# Filter data for Risk 1 (High)
+risk1_df = df[df['risk'] == 'Risk 1 (High)']
+
+# Top Facility Types in Risk 1
+fig, ax = plt.subplots(figsize=(10, 6))
+top_risk1_facilities = risk1_df['facility_type'].value_counts().head(10)
+sns.barplot(x=top_risk1_facilities.values, y=top_risk1_facilities.index, ax=ax)
+ax.set_title("Top Facility Types in Risk 1 (High)", fontsize=16)
+ax.set_xlabel("Number of Inspections")
+ax.set_ylabel("Facility Type")
+st.pyplot(fig)
+
+# Pie Chart of Facility Types in Risk 1
+facility_counts = risk1_df['facility_type'].value_counts()
+top_facilities = facility_counts.head(10)
+other_count = facility_counts[10:].sum()
+facility_labels = list(top_facilities.index) + ['Other']
+facility_sizes = list(top_facilities.values) + [other_count]
+fig, ax = plt.subplots(figsize=(8, 8))
+ax.pie(facility_sizes, labels=facility_labels, autopct='%1.1f%%', startangle=140)
+ax.set_title("Distribution of Facility Types in Risk 1 (High)", fontsize=16)
+st.pyplot(fig)
+
+# Map of Risk 1 Facilities
+import folium
+from streamlit_folium import st_folium
+
+# Create a folium map centered around the mean coordinates
+m = folium.Map(location=[risk1_df['latitude'].mean(), risk1_df['longitude'].mean()], zoom_start=11)
+
+# Add markers to the map
+for _, row in risk1_df.iterrows():
+    folium.Marker(
+        location=[row['latitude'], row['longitude']],
+        popup=row['dba_name'],
+        icon=folium.Icon(color='red')
+    ).add_to(m)
+
+# Display the map in Streamlit
+st_folium(m, width=700)
+
 
 #2.3 visualization for facility type
-st.subheader("2.3 Visualization for Facility Type")
+st.subheader("Visualization for Facility Type")
 
 fig, ax = plt.subplots(2, 2, figsize=(20, 16))
 
@@ -135,7 +165,7 @@ ax[1, 1].set_ylabel('Latitude')
 st.pyplot(fig)
 
 #2.4 visualization
-st.subheader("2.4 Visualization for Results of Inspection")
+st.subheader("Visualization for Results of Inspection")
 
 fig, ax = plt.subplots(2, 2, figsize=(20, 16))
 

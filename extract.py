@@ -6,11 +6,11 @@ import requests
 import os
 
 
-# fetch data from the API endpoint with a limit of 1000 rows
+# fetch data from API - limit of 1000 rows
 url = "https://data.cityofchicago.org/resource/4ijn-s7e5.csv?$limit=1000&$offset=0"
 response = requests.get(url)
 
-# load data into a pandas DataFrame from the response content
+# load data into a pandas df
 data = pd.read_csv(url)
 
 # save

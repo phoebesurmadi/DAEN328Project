@@ -102,91 +102,59 @@ st.pyplot(fig2)
 # 2.3 Visualization for Facility Type
 st.subheader("🏬 Facility Type Analysis")
 
+# Drop missing geo points
+geo_df = df.dropna(subset=["latitude", "longitude"])
+
 fig, ax = plt.subplots(2, 2, figsize=(20, 16))
 
 # Top 10 facility types
-top_facilities = df['facility_type'].value_counts().head(10)
+top_facilities = df["facility_type"].value_counts().head(10)
 sns.barplot(x=top_facilities.values, y=top_facilities.index, ax=ax[0, 0])
 ax[0, 0].set_title("Top 10 Facility Types by Count of Inspections", size=20)
 ax[0, 0].set_xlabel("Counts", size=18)
 ax[0, 0].set_ylabel("")
 
-# Restaurant scatterplot
-sns.scatterplot(
-    lat="latitude", lon="longitude",
-    hue="risk", data=df[df['facility_type'] == 'restaurant'],
-    ax=ax[0, 1]
-)
-ax[0, 1].set_title("Inspections for Restaurants", size=20)
+# Restaurant
+restaurant_df = geo_df[geo_df["facility_type"] == "restaurant"]
+if not restaurant_df.empty:
+    sns.scatterplot(
+        x="longitude", y="latitude", hue="risk",
+        data=restaurant_df, ax=ax[0, 1]
+    )
+    ax[0, 1].set_title("Inspections for Restaurants", size=20)
+else:
+    ax[0, 1].text(0.5, 0.5, "No data for 'restaurant'", ha="center", va="center", fontsize=14)
 ax[0, 1].set_xlabel("Longitude")
 ax[0, 1].set_ylabel("Latitude")
 
-# Grocery Store scatterplot
-sns.scatterplot(
-    lat="latitude", lon="longitude",
-    hue="risk", data=df[df['facility_type'] == 'grocery store'],
-    ax=ax[1, 0]
-)
-ax[1, 0].set_title("Inspections for Grocery Stores", size=20)
+# Grocery Store
+grocery_df = geo_df[geo_df["facility_type"] == "grocery store"]
+if not grocery_df.empty:
+    sns.scatterplot(
+        x="longitude", y="latitude", hue="risk",
+        data=grocery_df, ax=ax[1, 0]
+    )
+    ax[1, 0].set_title("Inspections for Grocery Stores", size=20)
+else:
+    ax[1, 0].text(0.5, 0.5, "No data for 'grocery store'", ha="center", va="center", fontsize=14)
 ax[1, 0].set_xlabel("Longitude")
 ax[1, 0].set_ylabel("Latitude")
 
-# School scatterplot
-sns.scatterplot(
-    lat="latitude", lon="longitude",
-    hue="risk", data=df[df['facility_type'] == 'school'],
-    ax=ax[1, 1]
-)
-ax[1, 1].set_title("Inspections for Schools", size=20)
+# School
+school_df = geo_df[geo_df["facility_type"] == "school"]
+if not school_df.empty:
+    sns.scatterplot(
+        x="longitude", y="latitude", hue="risk",
+        data=school_df, ax=ax[1, 1]
+    )
+    ax[1, 1].set_title("Inspections for Schools", size=20)
+else:
+    ax[1, 1].text(0.5, 0.5, "No data for 'school'", ha="center", va="center", fontsize=14)
 ax[1, 1].set_xlabel("Longitude")
 ax[1, 1].set_ylabel("Latitude")
 
 st.pyplot(fig)
 
-# 2.4 Visualization for Results of Inspection
-st.subheader("📑 Inspection Result Trends")
-
-fig, ax = plt.subplots(2, 2, figsize=(20, 16))
-
-# Bar chart for overall result counts
-result_counts = df["results"].value_counts()
-sns.barplot(x=result_counts.index, y=result_counts.values, ax=ax[0, 0])
-ax[0, 0].set_title("Counts of Inspection Results", size=20)
-ax[0, 0].set_ylabel("Counts", size=18)
-ax[0, 0].set_xlabel("")
-
-# Add 'year' column for time-based grouping
-df["year"] = df["inspection_date"].dt.year
-
-# Group by results and year
-results_by_year = df.groupby(["results", "year"])["inspection_id"].count().unstack("results")
-results_by_year.plot(kind="bar", ax=ax[0, 1])
-ax[0, 1].tick_params(axis="x", labelrotation=360)
-ax[0, 1].legend(loc="upper left", fontsize=14, bbox_to_anchor=(1.15, 0.75))
-ax[0, 1].set_title("Counts of Inspection Results by Year", size=20)
-ax[0, 1].set_ylabel("Counts", size=18)
-
-# Scatter for "Pass"
-sns.scatterplot(
-    lat="latitude", lon="longitude",
-    hue="risk", data=df[df["results"] == "pass"],
-    ax=ax[1, 0]
-)
-ax[1, 0].set_title("Geographic Distribution of Passed Inspections", size=20)
-ax[1, 0].set_xlabel("Longitude")
-ax[1, 0].set_ylabel("Latitude")
-
-# Scatter for "Fail"
-sns.scatterplot(
-    lat="latitude", lon="longitude",
-    hue="risk", data=df[df["results"] == "fail"],
-    ax=ax[1, 1]
-)
-ax[1, 1].set_title("Geographic Distribution of Failed Inspections", size=20)
-ax[1, 1].set_xlabel("Longitude")
-ax[1, 1].set_ylabel("Latitude")
-
-st.pyplot(fig)
 
 # Time between inspections
 st.subheader("⏱️ Time Between Inspections")

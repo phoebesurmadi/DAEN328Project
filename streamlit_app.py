@@ -7,8 +7,8 @@ from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import os
 
-# Load env variables
 load_dotenv()
+DB_URL = os.getenv("DB_URL")
 
 # Setup
 st.set_page_config(page_title="Chicago Food Inspections", layout="wide")
@@ -16,6 +16,7 @@ st.title("🍽️ Chicago Food Inspections: Deep Dive Dashboard")
 
 # Connect to DB
 engine = create_engine(DB_URL)
+
 
 # Load Data
 @st.cache_data

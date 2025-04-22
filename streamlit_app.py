@@ -99,17 +99,6 @@ sns.heatmap(pivot2, annot=True, fmt="d", cmap="Greens", ax=ax2)
 plt.title("Zip Code vs Result Count")
 st.pyplot(fig2)
 
-# Time between inspections
-st.subheader("⏱️ Time Between Inspections")
-biz_time = df.sort_values(["dba_name", "inspection_date"]).copy()
-biz_time["prev_date"] = biz_time.groupby("dba_name")["inspection_date"].shift()
-biz_time["days_between"] = (biz_time["inspection_date"] - biz_time["prev_date"]).dt.days
-
-fig3, ax3 = plt.subplots()
-sns.boxplot(data=biz_time.dropna(subset=["days_between"]), x="risk", y="days_between", ax=ax3)
-plt.title("Days Between Inspections by Risk Level")
-st.pyplot(fig3)
-
 # Map of Recent Inspections
 st.subheader("🗺️ Recent Inspection Locations")
 recent_df = df.dropna(subset=["latitude", "longitude"]).sort_values("inspection_date", ascending=False).head(500)

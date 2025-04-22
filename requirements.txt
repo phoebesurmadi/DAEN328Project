@@ -10,7 +10,7 @@ pandas # To store, manipulate, and clean tabular data
 
 
 # streamlit
-
+folium
 streamlit
 pandas
 matplotlib

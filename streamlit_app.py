@@ -99,6 +99,77 @@ sns.heatmap(pivot2, annot=True, fmt="d", cmap="Greens", ax=ax2)
 plt.title("Zip Code vs Result Count")
 st.pyplot(fig2)
 
+#2.3 visualization for facility type
+st.subheader("2.3 Visualization for Facility Type")
+
+fig, ax = plt.subplots(2, 2, figsize=(20, 16))
+
+# Top 10 Facility Types by Inspection Count
+top_facilities = df['facility_type'].value_counts().nlargest(10)
+sns.barplot(x=top_facilities.values, y=top_facilities.index, ax=ax[0, 0])
+ax[0, 0].set_title("Top 10 Facility Types by Inspection Count", fontsize=20)
+ax[0, 0].set_xlabel('Counts', fontsize=18)
+ax[0, 0].set_ylabel('')
+
+# Distribution of Inspections for Restaurants
+restaurant_data = df[df['facility_type'] == 'Restaurant']
+sns.scatterplot(x='longitude', y='latitude', hue='risk', data=restaurant_data, ax=ax[0, 1])
+ax[0, 1].set_title("Distribution of Inspections for Restaurants", fontsize=20)
+ax[0, 1].set_xlabel('Longitude')
+ax[0, 1].set_ylabel('Latitude')
+
+# Distribution of Inspections for Grocery Stores
+grocery_data = df[df['facility_type'] == 'Grocery Store']
+sns.scatterplot(x='longitude', y='latitude', hue='risk', data=grocery_data, ax=ax[1, 0])
+ax[1, 0].set_title("Distribution of Inspections for Grocery Stores", fontsize=20)
+ax[1, 0].set_xlabel('Longitude')
+ax[1, 0].set_ylabel('Latitude')
+
+# Distribution of Inspections for Schools
+school_data = df[df['facility_type'] == 'School']
+sns.scatterplot(x='longitude', y='latitude', hue='risk', data=school_data, ax=ax[1, 1])
+ax[1, 1].set_title("Distribution of Inspections for Schools", fontsize=20)
+ax[1, 1].set_xlabel('Longitude')
+ax[1, 1].set_ylabel('Latitude')
+
+st.pyplot(fig)
+
+#2.4 visualization
+st.subheader("2.4 Visualization for Results of Inspection")
+
+fig, ax = plt.subplots(2, 2, figsize=(20, 16))
+
+# Counts of Inspection Results
+result_counts = df['results'].value_counts()
+sns.barplot(x=result_counts.index, y=result_counts.values, ax=ax[0, 0])
+ax[0, 0].set_title("Counts of Inspection Results", fontsize=20)
+ax[0, 0].set_ylabel('Counts', fontsize=18)
+ax[0, 0].set_xlabel('')
+
+# Counts of Inspection Results by Year
+df['year'] = df['inspection_date'].dt.year
+results_by_year = df.groupby(['results', 'year']).size().unstack('results')
+results_by_year.plot(kind='bar', ax=ax[0, 1])
+ax[0, 1].set_title("Counts of Inspection Results by Year", fontsize=20)
+ax[0, 1].set_ylabel('Counts', fontsize=18)
+ax[0, 1].legend(title='Results', bbox_to_anchor=(1.05, 1), loc='upper left')
+
+# Distribution of Passed Inspections
+pass_data = df[df['results'] == 'Pass']
+sns.scatterplot(x='longitude', y='latitude', hue='risk', data=pass_data, ax=ax[1, 0])
+ax[1, 0].set_title("Distribution of Passed Inspections", fontsize=20)
+ax[1, 0].set_xlabel('Longitude')
+ax[1, 0].set_ylabel('Latitude')
+
+# Distribution of Failed Inspections
+fail_data = df[df['results'] == 'Fail']
+sns.scatterplot(x='longitude', y='latitude', hue='risk', data=fail_data, ax=ax[1, 1])
+ax[1, 1].set_title("Distribution of Failed Inspections", fontsize=20)
+ax[1, 1].set_xlabel('Longitude')
+ax[1, 1].set_ylabel('Latitude')
+
+st.pyplot(fig)
+
 # Map of Recent Inspections
 st.subheader("🗺️ Recent Inspection Locations")
 recent_df = df.dropna(subset=["latitude", "longitude"]).sort_values("inspection_date", ascending=False).head(500)

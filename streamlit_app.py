@@ -83,18 +83,6 @@ monthly["inspection_date"] = monthly["inspection_date"].dt.to_timestamp()
 trend_fig = px.line(monthly, x="inspection_date", y="count", title="Monthly Number of Inspections")
 st.plotly_chart(trend_fig, use_container_width=True)
 
-# Violation Keyword Frequency
-st.subheader("🚨 Most Common Violations (Keywords)")
-if 'violation_description' in df.columns:
-    violations = df['violation_description'].dropna().str.lower().str.split('. ')
-    keywords = pd.Series([item for sublist in violations for item in sublist])
-    top_violations = keywords.value_counts().head(10)
-    fig, ax = plt.subplots()
-    top_violations.plot(kind='barh', ax=ax)
-    ax.set_title("Top 10 Violation Phrases")
-    ax.invert_yaxis()
-    st.pyplot(fig)
-
 # Facility Type vs Results Heatmap
 st.subheader("🏪 Facility Type vs Results")
 pivot = df.pivot_table(index="facility_type", columns="results", aggfunc="size", fill_value=0)

@@ -62,7 +62,7 @@ for index, row in df.iterrows():
         row['inspection_type'],
         row['results'],
         row['latitude'],
-        row['longitude']
+        row['longitude'],
         row['violations']
     ))
 

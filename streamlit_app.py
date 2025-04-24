@@ -68,6 +68,14 @@ result_counts.columns = ["result", "count"]
 result_fig = px.bar(result_counts, x='result', y='count', color='result', title="Inspection Results Count")
 st.plotly_chart(result_fig, use_container_width=True)
 
+# Facility Type Analysis
+st.subheader("🏷️ Facility Type Inspection Patterns")
+top_facilities = df['facility_type'].value_counts().nlargest(10).reset_index()
+top_facilities.columns = ['facility_type', 'count']
+fig = px.bar(top_facilities, x='count', y='facility_type', orientation='h', color='count', color_continuous_scale='Tealgrn')
+fig.update_layout(yaxis=dict(autorange="reversed"))
+st.plotly_chart(fig, use_container_width=True)
+
 # Facility Type vs Results Heatmap
 st.subheader("🏪 Facility Type vs Results")
 pivot = df.pivot_table(index="facility_type", columns="results", aggfunc="size", fill_value=0)
@@ -136,14 +144,6 @@ def visualize_risk_level(df, risk_level, risk_label):
 visualize_risk_level(df, 'Risk 1 (High)', 'Risk 1 (High)')
 visualize_risk_level(df, 'Risk 2 (Medium)', 'Risk 2 (Medium)')
 visualize_risk_level(df, 'Risk 3 (Low)', 'Risk 3 (Low)')
-
-# Facility Type Analysis
-st.subheader("🏷️ Facility Type Inspection Patterns")
-top_facilities = df['facility_type'].value_counts().nlargest(10).reset_index()
-top_facilities.columns = ['facility_type', 'count']
-fig = px.bar(top_facilities, x='count', y='facility_type', orientation='h', color='count', color_continuous_scale='Tealgrn')
-fig.update_layout(yaxis=dict(autorange="reversed"))
-st.plotly_chart(fig, use_container_width=True)
 
 # Map of Inspection Results
 st.subheader("🗺️ Map View")

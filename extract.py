@@ -1,19 +1,35 @@
 
 #       EXTRACTION
-
-import pandas as pd
 import requests
+import pandas as pd
+import time
 import os
 
+data = pd.DataFrame()
 
-# fetch data from API - limit of 1000 rows
-url = "https://data.cityofchicago.org/resource/4ijn-s7e5.csv?$limit=1000&$offset=0"
-response = requests.get(url)
+for offset in range(0, 100000, 1000):
+    url = f"https://data.cityofchicago.org/resource/4ijn-s7e5.csv?$limit=1000&$offset={offset}"
+    success = False
+    retries = 3
+    
+    while not success and retries > 0:
+        try:
+            response = requests.get(url)
+            response.raise_for_status() 
+            temp_data = pd.read_csv(url)
+            data = pd.concat([data, temp_data], ignore_index=True)
+            success = True
+        except requests.exceptions.RequestException as e:
+            print(f"error fetching data at offset {offset}: {e}")
+            retries -= 1
+            time.sleep(5)  
+    
+    if not success:
+        print(f"failed to fetch data at offset {offset} after 3 retries.")
 
-# load data into a pandas df
-data = pd.read_csv(url)
 
-# save
+
+
 output_path = 'DAEN328_Project/data/Messy_Data.csv'
 
 os.makedirs(os.path.dirname(output_path), exist_ok=True)

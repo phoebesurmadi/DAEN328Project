@@ -9,6 +9,7 @@ import os
 import folium
 from folium.plugins import MarkerCluster
 from streamlit_folium import st_folium
+import plotly.express as px
 
 # Load environment variables
 load_dotenv()
@@ -94,17 +95,21 @@ def visualize_risk_level(df, risk_level, risk_label):
     other_count = facility_counts.sum() - top_facilities.sum()
     facility_labels = list(top_facilities.index) + ['Other']
     facility_sizes = list(top_facilities.values) + [other_count]
-    fig, ax = plt.subplots(figsize=(8, 8))
-    ax.pie(
-        facility_sizes,
-        labels=facility_labels,
-        autopct='%1.1f%%',
-        startangle=140,
-        textprops={'fontsize': 8},
-        labeldistance=1.2
+    # Create a Plotly donut chart
+    pie_df = pd.DataFrame({
+        "Facility Type": facility_labels,
+        "Count": facility_sizes
+    })
+    pie_fig = px.pie(
+        pie_df,
+        names="Facility Type",
+        values="Count",
+        title=f"Facility Type Distribution for {risk_label}",
+        hole=0.4
     )
-    ax.axis('equal')
-    st.pyplot(fig)
+    pie_fig.update_traces(textinfo='percent+label', hoverinfo='label+value+percent')
+    st.plotly_chart(pie_fig, use_container_width=True)
+
 
     st.subheader("**Inspection Locations Map**")
     map_data = risk_data.dropna(subset=['latitude', 'longitude']).head(2000)

@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS inspection_db (
   results VARCHAR(50),
   latitude FLOAT,
   longitude FLOAT
+  violations VARCHAR(500)
 );
 """
 cur.execute(create_table_query)
@@ -45,8 +46,8 @@ cur.execute(create_table_query)
 insert_query = """
 INSERT INTO inspection (
   inspection_id, business_name, facility_type, risk, address, zip,
-  inspection_date, inspection_type, results, latitude, longitude
-) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+  inspection_date, inspection_type, results, latitude, longitude, violations
+) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 """
 
 for index, row in df.iterrows():
@@ -62,6 +63,7 @@ for index, row in df.iterrows():
         row['results'],
         row['latitude'],
         row['longitude']
+        row['violations']
     ))
 
 conn.commit()

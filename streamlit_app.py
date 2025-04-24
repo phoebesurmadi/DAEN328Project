@@ -151,22 +151,33 @@ visualize_risk_level(df, 'Risk 3 (Low)', 'Risk 3 (Low)')
 
 # Map of Inspection Results
 st.subheader("🗺️ Map View")
-map_option = st.radio("Choose Map Type:", ["Recent Inspections", "High Risk", "By Result"])
+map_option = st.radio("Choose Map Type:", ["Recent Inspections", "High Risk", "Medium Risk", "Low Risk", "By Result"])
+
 if map_option == "Recent Inspections":
     map_data = df.dropna(subset=["latitude", "longitude"]).sort_values("inspection_date", ascending=False).head(500)
+
 elif map_option == "High Risk":
     map_data = df[df['risk'] == 'Risk 1 (High)'].dropna(subset=["latitude", "longitude"])
-else:
+
+elif map_option == "Medium Risk":
+    map_data = df[df['risk'] == 'Risk 2 (Medium)'].dropna(subset=["latitude", "longitude"])
+
+elif map_option == "Low Risk":
+    map_data = df[df['risk'] == 'Risk 3 (Low)'].dropna(subset=["latitude", "longitude"])
+
+else:  # By Result
     result_choice = st.selectbox("Select Result Type", df['results'].dropna().unique())
     map_data = df[df['results'] == result_choice].dropna(subset=["latitude", "longitude"])
 
+# Display interactive map
 map_fig = px.scatter_mapbox(
     map_data,
     lat="latitude", lon="longitude",
     color="results",
     hover_name="dba_name",
     hover_data=["inspection_date", "facility_type", "risk"],
-    zoom=10, height=500
+    zoom=10,
+    height=500
 )
 map_fig.update_layout(mapbox_style="carto-positron", margin={"r":0,"t":0,"l":0,"b":0})
 st.plotly_chart(map_fig, use_container_width=True)

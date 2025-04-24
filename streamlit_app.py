@@ -101,27 +101,24 @@ def visualize_risk_level(df, risk_level, risk_label):
     ax.set_ylabel("Facility Type")
     st.pyplot(fig)
 
-    # Create the pie chart
-    fig, ax = plt.subplots(figsize=(8, 8))
-    wedges, texts = ax.pie(facility_sizes, startangle=90, wedgeprops=dict(width=0.5))
-    
-    # Function to calculate label positions and add annotations
-    for i, p in enumerate(wedges):
-        # Calculate angle for the current slice
-        ang = (p.theta2 - p.theta1)/2. + p.theta1
-        y = np.sin(np.deg2rad(ang))
-        x = np.cos(np.deg2rad(ang))
-        horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
-        connectionstyle = "angle,angleA=0,angleB={}".format(ang)
-        # Annotate with arrow
-        ax.annotate(f"{facility_labels[i]}: {facility_sizes[i]}%",
-                    xy=(x, y),
-                    xytext=(1.35*np.sign(x), 1.4*y),
-                    horizontalalignment=horizontalalignment,
-                    arrowprops=dict(arrowstyle="-", connectionstyle=connectionstyle))
-        
-    ax.set_title("Facility Type Distribution")
-    plt.show()
+   # Pie Chart: Facility Type Distribution
+    st.subheader("**Facility Type Distribution**")
+    facility_counts = risk_data['facility_type'].value_counts()
+    top_facilities = facility_counts.nlargest(10)
+    other_count = facility_counts.sum() - top_facilities.sum()
+    facility_labels = list(top_facilities.index) + ['Other']
+    facility_sizes = list(top_facilities.values) + [other_count]
+    fig, ax = plt.subplots(figsize=(8, 8))  # Adjust the figure size as needed
+    patches, texts, autotexts = ax.pie(
+        facility_sizes,
+        labels=facility_labels,
+        autopct='%1.1f%%',
+        startangle=140,
+        textprops={'fontsize': 8},  # Set a smaller font size
+        labeldistance=1.2  # Position labels slightly further from the center
+    )
+    ax.axis('equal')
+    st.pyplot(fig)
 
     # Map: Inspection Locations
     st.subheader("**Inspection Locations Map**")

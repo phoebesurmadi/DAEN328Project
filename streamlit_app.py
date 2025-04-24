@@ -82,12 +82,20 @@ def visualize_risk_level(df, risk_level, risk_label):
     risk_data = df[df['risk'] == risk_level]
 
     st.subheader("**Top 10 Facility Types**")
-    top_facilities = risk_data['facility_type'].value_counts().nlargest(10)
-    fig, ax = plt.subplots(figsize=(10, 6))
-    sns.barplot(x=top_facilities.values, y=top_facilities.index, ax=ax)
-    ax.set_xlabel("Number of Inspections")
-    ax.set_ylabel("Facility Type")
-    st.pyplot(fig)
+    top_facilities_df = risk_data['facility_type'].value_counts().nlargest(10).reset_index()
+    top_facilities_df.columns = ['Facility Type', 'Count']
+    bar_fig = px.bar(
+        top_facilities_df,
+        x='Count',
+        y='Facility Type',
+        orientation='h',
+        title="Top 10 Facility Types",
+        color='Count',
+        color_continuous_scale='Tealgrn'
+    )
+    bar_fig.update_layout(yaxis=dict(autorange="reversed"))
+    st.plotly_chart(bar_fig, use_container_width=True)
+
 
     st.subheader("**Facility Type Distribution**")
     facility_counts = risk_data['facility_type'].value_counts()

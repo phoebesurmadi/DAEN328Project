@@ -138,6 +138,7 @@ def visualize_risk_level(df, risk_level, risk_label):
                 popup=row['dba_name']
             ).add_to(marker_cluster)
         st_folium(m, width=1000, height=500)
+        st.markdown("<div style='margin-top:-50px;'></div>", unsafe_allow_html=True)
     else:
         st.info("No location data available for this risk level.")
 

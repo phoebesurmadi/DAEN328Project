@@ -47,7 +47,7 @@ def clean(df):
 
     df['facility_type'] = df['facility_type'].map(facility_mapping).fillna(df['facility_type'])
 
-    df = df.drop(columns=['aka_name', 'license_', 'city', 'state', 'violations', 'location'])
+    df = df.drop(columns=['aka_name', 'license_', 'city', 'state', 'location'])
     df = df[df['results'] != 'No Entry']
     df = df.dropna()
     return df

@@ -108,9 +108,25 @@ def visualize_risk_level(df, risk_level, risk_label):
     other_count = facility_counts.sum() - top_facilities.sum()
     facility_labels = list(top_facilities.index) + ['Other']
     facility_sizes = list(top_facilities.values) + [other_count]
-    fig, ax = plt.subplots()
-    ax.pie(facility_sizes, labels=facility_labels, autopct='%1.1f%%', startangle=140)
-    ax.axis('equal')
+    fig, ax = plt.subplots(figsize=(8, 8))  # Adjust the figure size as needed
+    patches, texts, autotexts = ax.pie(
+        facility_sizes,
+        labels=facility_labels,
+        autopct='%1.1f%%',
+        startangle=90,
+        labeldistance=1.15,  # Position labels slightly further from the center
+        pctdistance=0.8,     # Position percentage texts closer to the center
+        textprops={'fontsize': 12}  # Set a readable font size
+    )
+    
+    # Optional: Customize label alignment
+    for text in texts:
+        text.set_horizontalalignment('center')
+    
+    for autotext in autotexts:
+        autotext.set_horizontalalignment('center')
+    
+    ax.axis('equal')  # Ensure the pie chart is a circle
     st.pyplot(fig)
 
     # Map: Inspection Locations

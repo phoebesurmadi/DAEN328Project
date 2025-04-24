@@ -141,6 +141,9 @@ def visualize_risk_level(df, risk_level, risk_label):
         st_folium(m, width=1000, height=map_height)
 
         st.markdown("<div style='margin-top:-50px;'></div>", unsafe_allow_html=True)
+        with st.expander("📍 View Inspection Locations on Folium Map"):
+            st_folium(m, width=1000, height=600)
+
     else:
         st.info("No location data available for this risk level.")
 

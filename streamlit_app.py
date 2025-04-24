@@ -55,7 +55,7 @@ col1.metric("Total Inspections", len(df))
 col2.metric("Unique Businesses", df['dba_name'].nunique())
 col3.metric("Risk Levels", df['risk'].nunique())
 col4.metric("Facility Types", df['facility_type'].nunique())
-st.divider()
+#st.divider()
 
 # Risk Pie Chart
 risk_pie = px.pie(df, names="risk", title="Risk Level Breakdown", hole=0.4)

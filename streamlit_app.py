@@ -93,7 +93,7 @@ def visualize_risk_level(df, risk_level, risk_label):
     risk_data = df[df['risk'] == risk_level]
 
     # Bar Chart: Top 10 Facility Types
-    st.markdown("**Top 10 Facility Types**")
+    st.subheader("**Top 10 Facility Types**")
     top_facilities = risk_data['facility_type'].value_counts().nlargest(10)
     fig, ax = plt.subplots(figsize=(10, 6))
     sns.barplot(x=top_facilities.values, y=top_facilities.index, ax=ax)
@@ -102,7 +102,7 @@ def visualize_risk_level(df, risk_level, risk_label):
     st.pyplot(fig)
 
     # Pie Chart: Facility Type Distribution
-    st.markdown("**Facility Type Distribution**")
+    st.subheader("**Facility Type Distribution**")
     facility_counts = risk_data['facility_type'].value_counts()
     top_facilities = facility_counts.nlargest(10)
     other_count = facility_counts.sum() - top_facilities.sum()
@@ -114,7 +114,7 @@ def visualize_risk_level(df, risk_level, risk_label):
     st.pyplot(fig)
 
     # Map: Inspection Locations
-    st.markdown("**Inspection Locations Map**")
+    st.subheader("**Inspection Locations Map**")
     map_data = risk_data.dropna(subset=['latitude', 'longitude']).head(2000)
     if not map_data.empty:
         m = folium.Map(location=[map_data['latitude'].mean(), map_data['longitude'].mean()], zoom_start=12)

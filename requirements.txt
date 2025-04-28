@@ -1,12 +1,10 @@
 # API call
 
 requests # To make HTTP requests and fetch data from APIs
-time
 
 #   cleaning and storing
 
 pandas # To store, manipulate, and clean tabular data
-re
 
 
 # streamlit

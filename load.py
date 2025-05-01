@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS inspection_db (
   results VARCHAR(50),
   latitude FLOAT,
   longitude FLOAT,
-  violations VARCHAR(500)
+  violations TEXT
 );
 """
 cur.execute(create_table_query)

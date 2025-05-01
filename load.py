@@ -24,7 +24,7 @@ conn = psycopg2.connect(
 
 cur = conn.cursor()
 
-
+cur.execute("DROP TABLE IF EXISTS inspection_db;")
 # Create the table if it doesn't exist
 create_table_query = """
 CREATE TABLE IF NOT EXISTS inspection_db (

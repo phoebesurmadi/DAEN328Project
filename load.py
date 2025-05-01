@@ -54,7 +54,7 @@ INSERT INTO inspection (
 for index, row in df.iterrows():
     cur.execute(insert_query, (
         row['inspection_id'],
-        row['business_name'],
+        row['dba_name'],
         row['facility_type'],
         row['risk'],
         row['address'],

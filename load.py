@@ -2,6 +2,7 @@ import os
 import psycopg2
 import pandas as pd
 from dotenv import load_dotenv
+df = pd.read_csv("DAEN328_Project/data/Clean_Data.csv")
 
 # Load environment variables from .env file
 load_dotenv()

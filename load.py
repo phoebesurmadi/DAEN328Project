@@ -28,7 +28,7 @@ cur = conn.cursor()
 create_table_query = """
 CREATE TABLE IF NOT EXISTS inspection_db (
   inspection_id INTEGER PRIMARY KEY,
-  business_name VARCHAR(255),
+  aka_name VARCHAR(255),
   facility_type VARCHAR(100),
   risk VARCHAR(50),
   address VARCHAR(255),
@@ -46,7 +46,7 @@ cur.execute(create_table_query)
 # Insert data into the table
 insert_query = """
 INSERT INTO inspection_db (
-  inspection_id, business_name, facility_type, risk, address, zip,
+  inspection_id, aka_name, facility_type, risk, address, zip,
   inspection_date, inspection_type, results, latitude, longitude, violations
 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 """

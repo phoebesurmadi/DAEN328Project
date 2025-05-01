@@ -2,30 +2,37 @@ import os
 import psycopg2
 import pandas as pd
 from dotenv import load_dotenv
-df = pd.read_csv("DAEN328_Project/data/Clean_Data.csv")
 
 # Load environment variables from .env file
 load_dotenv()
 
+# ✅ Corrected environment variable names
 POSTGRES_HOST = os.getenv("POSTGRES_HOST")
 POSTGRES_PORT = int(os.getenv("POSTGRES_PORT"))
-POSTGRES_NAME = os.getenv("POSTGRES_NAME")
+POSTGRES_DB = os.getenv("POSTGRES_DB")  # ✅ FIX: match .env key
 POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 
+# ✅ Debug print to verify loaded environment variables
+print(f"Connecting to {POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB} as {POSTGRES_USER}")
+
 # Connect to PostgreSQL
 conn = psycopg2.connect(
-  host=POSTGRES_HOST,
-  port=POSTGRES_PORT,
-  dbname=POSTGRES_NAME,
-  user=POSTGRES_USER,
-  password=POSTGRES_PASSWORD
+    host=POSTGRES_HOST,
+    port=POSTGRES_PORT,
+    dbname=POSTGRES_DB,
+    user=POSTGRES_USER,
+    password=POSTGRES_PASSWORD
 )
 
 cur = conn.cursor()
 
+# ✅ Confirm dropping table
+print("Dropping table if exists...")
 cur.execute("DROP TABLE IF EXISTS inspection_db;")
-# Create the table if it doesn't exist
+
+# ✅ Confirm table creation
+print("Creating table...")
 create_table_query = """
 CREATE TABLE IF NOT EXISTS inspection_db (
   inspection_id INTEGER PRIMARY KEY,
@@ -44,7 +51,14 @@ CREATE TABLE IF NOT EXISTS inspection_db (
 """
 cur.execute(create_table_query)
 
-# Insert data into the table
+# ✅ Load CSV
+print("Loading CSV data...")
+df = pd.read_csv("DAEN328_Project/data/Clean_Data.csv")
+print(f"Loaded {len(df)} rows from CSV.")
+
+# ✅ Confirm start of data insertion
+print("Inserting data into database...")
+
 insert_query = """
 INSERT INTO inspection_db (
   inspection_id, aka_name, facility_type, risk, address, zip,
@@ -68,8 +82,13 @@ for index, row in df.iterrows():
         row['longitude'],
         row['violations']
     ))
+    if index % 1000 == 0:
+        print(f"Inserted {index}/{len(df)} rows...")
 
 conn.commit()
 cur.close()
 conn.close()
+
+print("✅ Data loading complete.")
+
 

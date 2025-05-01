@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS inspection_db (
   inspection_type VARCHAR(100),
   results VARCHAR(50),
   latitude FLOAT,
-  longitude FLOAT
+  longitude FLOAT,
   violations VARCHAR(500)
 );
 """

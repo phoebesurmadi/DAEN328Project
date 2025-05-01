@@ -171,7 +171,7 @@ else:  # By Result
 
 #Common Violations
 st.subheader("🚨 Top 20 Most Common Violations")
-top_viol = df_viol['violation'].value_counts().nlargest(20).reset_index()
+top_viol = df['violation'].value_counts().nlargest(20).reset_index()
 top_viol.columns = ['Violation Code', 'Count']
 
 fig = px.bar(

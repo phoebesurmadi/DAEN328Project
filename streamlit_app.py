@@ -52,7 +52,7 @@ df = df[
 st.markdown("### 📈 Key Metrics")
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("Total Inspections", len(df))
-col2.metric("Unique Businesses", df['dba_name'].nunique())
+col2.metric("Unique Businesses", df['aka_name'].nunique())
 col3.metric("Risk Levels", df['risk'].nunique())
 col4.metric("Facility Types", df['facility_type'].nunique())
 st.divider()
@@ -135,7 +135,7 @@ def visualize_risk_level(df, risk_level, risk_label):
         for _, row in map_data.iterrows():
             folium.Marker(
                 location=[row['latitude'], row['longitude']],
-                popup=row['dba_name']
+                popup=row['aka_name']
             ).add_to(marker_cluster)
         map_height = 500 if not map_data.empty else 200
         st_folium(m, width=1000, height=map_height)
@@ -174,7 +174,7 @@ map_fig = px.scatter_mapbox(
     map_data,
     lat="latitude", lon="longitude",
     color="results",
-    hover_name="dba_name",
+    hover_name="aka_name",
     hover_data=["inspection_date", "facility_type", "risk"],
     zoom=10,
     height=500

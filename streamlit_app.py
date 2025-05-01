@@ -192,7 +192,7 @@ risk_heat = df.groupby(['risk', 'violations']).size().reset_index(name='count')
 
 heatmap_fig = px.density_heatmap(
     risk_heat,
-    x='violation',
+    x='violations',
     y='risk',
     z='count',
     color_continuous_scale='Inferno',

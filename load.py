@@ -50,7 +50,8 @@ INSERT INTO inspection_db (
   inspection_id, aka_name, facility_type, risk, address, zip,
   inspection_date, inspection_type, results, latitude, longitude, violations
 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-"""
+ON CONFLICT (inspection_id) DO NOTHING
+
 
 for index, row in df.iterrows():
     cur.execute(insert_query, (

@@ -171,7 +171,7 @@ else:  # By Result
 
 #Common Violations
 st.subheader("🚨 Top 20 Most Common Violations")
-top_viol = df['violation'].value_counts().nlargest(20).reset_index()
+top_viol = df['violations'].value_counts().nlargest(20).reset_index()
 top_viol.columns = ['Violation Code', 'Count']
 
 fig = px.bar(
@@ -188,7 +188,7 @@ st.plotly_chart(fig, use_container_width=True)
 
 #Violation Frequency by Risk Level
 st.subheader("⚠️ Violation Frequency by Risk Level")
-risk_heat = df_viol.groupby(['risk', 'violation']).size().reset_index(name='count')
+risk_heat = df.groupby(['risk', 'violations']).size().reset_index(name='count')
 
 heatmap_fig = px.density_heatmap(
     risk_heat,
@@ -202,11 +202,11 @@ st.plotly_chart(heatmap_fig, use_container_width=True)
 
 #Violation Distribution by Facility Type
 st.subheader("🏢 Violation Distribution by Facility Type")
-fac_viol = df_viol.groupby(['facility_type', 'violation']).size().reset_index(name='count')
+fac_viol = df.groupby(['facility_type', 'violations']).size().reset_index(name='count')
 
 tree_fig = px.treemap(
     fac_viol,
-    path=['facility_type', 'violation'],
+    path=['facility_type', 'violations'],
     values='count',
     title="Facility Type → Violation Treemap"
 )
@@ -214,9 +214,9 @@ st.plotly_chart(tree_fig, use_container_width=True)
 
 #inspection sites for a specific violation
 st.subheader("🗺️ Map: Inspection Sites for a Specific Violation")
-selected_code = st.selectbox("Choose a Violation Code", sorted(df_viol['violation'].unique()))
+selected_code = st.selectbox("Choose a Violation Code", sorted(df['violations'].unique()))
 
-map_subset = df_viol[df_viol['violation'] == selected_code].dropna(subset=['latitude', 'longitude'])
+map_subset = df[df['violations'] == selected_code].dropna(subset=['latitude', 'longitude'])
 
 map_fig = px.scatter_mapbox(
     map_subset,
@@ -232,8 +232,8 @@ st.plotly_chart(map_fig, use_container_width=True)
 #businesses w specific violation
 st.subheader("🏢 Businesses with Specific Violation")
 
-selected_violation = st.selectbox("Choose Violation Code", sorted(df_viol['violation'].unique()))
-viol_subset = df_viol[df_viol['violation'] == selected_violation]
+selected_violation = st.selectbox("Choose Violation Code", sorted(df_viol['violations'].unique()))
+viol_subset = df[df['violations'] == selected_violation]
 
 # Bar chart: top businesses with this violation
 aka_viol = viol_subset['aka_name'].value_counts().nlargest(15).reset_index()

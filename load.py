@@ -24,7 +24,6 @@ conn = psycopg2.connect(
 
 cur = conn.cursor()
 
-cur.execute("TRUNCATE TABLE inspection_db;")
 
 # Create the table if it doesn't exist
 create_table_query = """

@@ -13,6 +13,7 @@ In this project we build a complete, modular, and dockerized ETL pipeline of dat
 ## $\textbf{Data Descriptions:}$
 
 'inspection_id': unique inspection ID
+
 'aka_name': name of establishment
 
 'license_': unique business ID

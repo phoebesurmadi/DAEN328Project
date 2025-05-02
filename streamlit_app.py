@@ -169,6 +169,19 @@ else:  # By Result
     result_choice = st.selectbox("Select Result Type", df['results'].dropna().unique())
     map_data = df[df['results'] == result_choice].dropna(subset=["latitude", "longitude"])
 
+# Display interactive map
+map_fig = px.scatter_mapbox(
+    map_data,
+    lat="latitude", lon="longitude",
+    color="results",
+    hover_name="aka_name",
+    hover_data=["inspection_date", "facility_type", "risk"],
+    zoom=10,
+    height=500
+)
+map_fig.update_layout(mapbox_style="carto-positron", margin={"r":0,"t":0,"l":0,"b":0})
+st.plotly_chart(map_fig, use_container_width=True)
+
 #Common Violations
 st.subheader("🚨 Top 20 Most Common Violations")
 top_viol = df['violations'].value_counts().nlargest(20).reset_index()
@@ -250,19 +263,6 @@ fig = px.bar(
 )
 fig.update_layout(yaxis=dict(autorange="reversed"))
 st.plotly_chart(fig, use_container_width=True)
-
-# Display interactive map
-map_fig = px.scatter_mapbox(
-    map_data,
-    lat="latitude", lon="longitude",
-    color="results",
-    hover_name="aka_name",
-    hover_data=["inspection_date", "facility_type", "risk"],
-    zoom=10,
-    height=500
-)
-map_fig.update_layout(mapbox_style="carto-positron", margin={"r":0,"t":0,"l":0,"b":0})
-st.plotly_chart(map_fig, use_container_width=True)
 
 # Data Table & Download
 st.subheader("📄 Explore & Download Data")

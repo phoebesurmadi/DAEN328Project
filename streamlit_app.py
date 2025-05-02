@@ -238,19 +238,21 @@ st.plotly_chart(tree_fig, use_container_width=True)
 
 #inspection sites for a specific violation
 st.subheader("🗺️ Map: Inspection Sites for a Specific Violation")
-selected_code = st.selectbox("Choose a Violation Code", sorted(df['violations'].unique()))
 
-map_subset = df[df['violations'] == selected_code].dropna(subset=['latitude', 'longitude'])
+selected_violation = st.selectbox("Choose Violation Code", sorted(df_viol['violation'].unique()))
+map_subset = df_viol[df_viol['violation'] == selected_violation].dropna(subset=['latitude', 'longitude'])
 
 map_fig = px.scatter_mapbox(
     map_subset,
-    lat="latitude", lon="longitude",
+    lat="latitude",
+    lon="longitude",
     color="risk",
-    hover_name="dba_name",
+    hover_name="aka_name",  # ✅ FIXED from dba_name to aka_name
     hover_data=["inspection_date", "facility_type", "results"],
-    zoom=10
+    zoom=10,
+    height=500
 )
-map_fig.update_layout(mapbox_style="carto-positron", height=500)
+map_fig.update_layout(mapbox_style="carto-positron", margin={"r":0,"t":0,"l":0,"b":0})
 st.plotly_chart(map_fig, use_container_width=True)
 
 #businesses w specific violation

@@ -182,20 +182,22 @@ map_fig = px.scatter_mapbox(
 map_fig.update_layout(mapbox_style="carto-positron", margin={"r":0,"t":0,"l":0,"b":0})
 st.plotly_chart(map_fig, use_container_width=True)
 
-# Filter out rows with violations and make a copy
+# --- Violation Cleaning & Expansion ---
 df_viol = df.dropna(subset=['violations']).copy()
-# Make sure it's treated as a string
 df_viol['violations'] = df_viol['violations'].astype(str)
-# Split by whitespace and explode
+
+# Split violations by whitespace, explode, and clean
 df_viol = df_viol.assign(
     violation=df_viol['violations'].str.split()
 ).explode('violation')
-# Convert to integer for analysis
+
+# Keep only numeric codes, drop blanks/NaNs
+df_viol = df_viol[df_viol['violation'].str.isnumeric()]
 df_viol['violation'] = df_viol['violation'].astype(int)
 
-#Common Violations
+#20 common violations
 st.subheader("🚨 Top 20 Most Common Violations")
-top_viol = df['violations'].value_counts().nlargest(20).reset_index()
+top_viol = df_viol['violation'].value_counts().nlargest(20).reset_index()
 top_viol.columns = ['Violation Code', 'Count']
 
 fig = px.bar(
@@ -205,39 +207,48 @@ fig = px.bar(
     orientation='h',
     color='Count',
     color_continuous_scale='Reds',
-    title="Top 20 Violations"
+    title="Top 20 Violation Codes Across All Inspections"
 )
-fig.update_layout(yaxis=dict(autorange="reversed"))
+fig.update_layout(
+    yaxis=dict(autorange='reversed'),
+    plot_bgcolor='white',
+    margin=dict(l=40, r=20, t=40, b=40)
+)
 st.plotly_chart(fig, use_container_width=True)
 
-#Violation Frequency by Risk Level
+#violation frequency
 st.subheader("⚠️ Violation Frequency by Risk Level")
-risk_heat = df.groupby(['risk', 'violations']).size().reset_index(name='count')
+risk_heat = df_viol.groupby(['risk', 'violation']).size().reset_index(name='Count')
 
 heatmap_fig = px.density_heatmap(
     risk_heat,
-    x='violations',
+    x='violation',
     y='risk',
-    z='count',
+    z='Count',
     color_continuous_scale='Inferno',
-    title="Violation Frequency by Risk Category"
+    title="Heatmap: Frequency of Violation Codes by Risk Category"
+)
+heatmap_fig.update_layout(
+    plot_bgcolor='white',
+    margin=dict(l=40, r=20, t=40, b=40)
 )
 st.plotly_chart(heatmap_fig, use_container_width=True)
 
-#Violation Distribution by Facility Type
+#violation distributions
 st.subheader("🏢 Violation Distribution by Facility Type")
-fac_viol = df.groupby(['facility_type', 'violations']).size().reset_index(name='count')
+fac_viol = df_viol.groupby(['facility_type', 'violation']).size().reset_index(name='Count')
 
 tree_fig = px.treemap(
     fac_viol,
-    path=['facility_type', 'violations'],
-    values='count',
-    title="Facility Type → Violation Treemap"
+    path=['facility_type', 'violation'],
+    values='Count',
+    title="Facility Type → Violation Code Treemap"
 )
+tree_fig.update_layout(margin=dict(t=50, l=25, r=25, b=25))
 st.plotly_chart(tree_fig, use_container_width=True)
 
-#inspection sites for a specific violation
-st.subheader("🗺️ Map: Inspection Sites for a Specific Violation")
+#sites with specific violation
+st.subheader("🗺️ Map: Sites with a Specific Violation")
 
 selected_violation = st.selectbox("Choose Violation Code", sorted(df_viol['violation'].unique()))
 map_subset = df_viol[df_viol['violation'] == selected_violation].dropna(subset=['latitude', 'longitude'])
@@ -247,35 +258,42 @@ map_fig = px.scatter_mapbox(
     lat="latitude",
     lon="longitude",
     color="risk",
-    hover_name="aka_name",  # ✅ FIXED from dba_name to aka_name
+    hover_name="aka_name",
     hover_data=["inspection_date", "facility_type", "results"],
     zoom=10,
     height=500
 )
-map_fig.update_layout(mapbox_style="carto-positron", margin={"r":0,"t":0,"l":0,"b":0})
+map_fig.update_layout(
+    mapbox_style="carto-positron",
+    margin={"r":0, "t":30, "l":0, "b":0},
+    title=f"Facilities with Violation Code {selected_violation}"
+)
 st.plotly_chart(map_fig, use_container_width=True)
 
-#businesses w specific violation
-st.subheader("🏢 Businesses with Specific Violation")
+# business w specifiv iolation
+st.subheader("🏪 Businesses with Selected Violation")
 
-selected_violation = st.selectbox("Choose Violation Code", sorted(df_viol['violations'].unique()))
-viol_subset = df[df['violations'] == selected_violation]
+selected_code = st.selectbox("Select Violation Code to View Businesses", sorted(df_viol['violation'].unique()))
+viol_subset = df_viol[df_viol['violation'] == selected_code]
 
-# Bar chart: top businesses with this violation
 aka_viol = viol_subset['aka_name'].value_counts().nlargest(15).reset_index()
-aka_viol.columns = ['Business', 'Count']
+aka_viol.columns = ['Business Name', 'Violation Count']
 
-fig = px.bar(
+biz_fig = px.bar(
     aka_viol,
-    x='Count',
-    y='Business',
+    x='Violation Count',
+    y='Business Name',
     orientation='h',
-    title=f"Top Businesses with Violation {selected_violation}",
-    color='Count',
-    color_continuous_scale='Teal'
+    color='Violation Count',
+    color_continuous_scale='Teal',
+    title=f"Top 15 Businesses with Violation Code {selected_code}"
 )
-fig.update_layout(yaxis=dict(autorange="reversed"))
-st.plotly_chart(fig, use_container_width=True)
+biz_fig.update_layout(
+    yaxis=dict(autorange='reversed'),
+    plot_bgcolor='white',
+    margin=dict(l=40, r=20, t=40, b=40)
+)
+st.plotly_chart(biz_fig, use_container_width=True)
 
 # Data Table & Download
 st.subheader("📄 Explore & Download Data")

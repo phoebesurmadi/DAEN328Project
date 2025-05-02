@@ -11,17 +11,28 @@ In this project we build a complete, modular, and dockerized ETL pipeline of dat
 
 
 ## $\textbf{Data Descriptions:}$
+
 'inspection_id': unique inspection ID
 'aka_name': name of establishment
+
 'license_': unique business ID
+
 'facility_type': restaurant, grocery store, etc.
+
 'risk': 1 of 3 risk types (high, low, medium) 
+
 'address': street address 
+
 'zip': zip code
+
 'violations': string list of violations
+
 'inspection_date' in datetime (2025-04-07 for example)
+
 'inspection_type': one of many inspection types
+
 'results': out of business, pass, etc
+
 'latitude', 'longitude': float values
 
 

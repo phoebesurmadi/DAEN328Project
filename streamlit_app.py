@@ -89,7 +89,7 @@ def visualize_risk_level(df, risk_level, risk_label):
     st.subheader(f"📌 {risk_label} Inspections Overview")
     risk_data = df[df['risk'] == risk_level]
 
-    st.subheader("**Top 10 Facility Types**")
+    st.subheader("**Top 7 Facility Types**")
     top_facilities_df = risk_data['facility_type'].value_counts().nlargest(10).reset_index()
     top_facilities_df.columns = ['Facility Type', 'Count']
     bar_fig = px.bar(
@@ -97,7 +97,7 @@ def visualize_risk_level(df, risk_level, risk_label):
         x='Count',
         y='Facility Type',
         orientation='h',
-        title="Top 10 Facility Types",
+        title="Top 7 Facility Types",
         color='Count',
         color_continuous_scale='Tealgrn'
     )

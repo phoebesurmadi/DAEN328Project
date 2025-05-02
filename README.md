@@ -1,7 +1,6 @@
 # Team 1: Final Project
 
-Project Overview:
-
+## $\textbf{Project Overview:}$
 In this project we build a complete, modular, and dockerized ETL pipeline of data from the Chicago Food Inspections API. The final project...
 
 1. Fetches data from the API
@@ -10,7 +9,8 @@ In this project we build a complete, modular, and dockerized ETL pipeline of dat
 4. Visualizes it using Streamlit
 5. Is fully dockerized using Docker and Docker Compose
 
-Data Descriptions:
+
+## $\textbf{Data Descriptions:}$
 'inspection_id': unique inspection ID
 'aka_name': name of establishment
 'license_': unique business ID
@@ -25,10 +25,24 @@ Data Descriptions:
 'latitude', 'longitude': float values
 
 
-Instructions:
+## $\textbf{Instructions:}$
 
+Run the following in command prompt or terminal to shut down any previously run images and delete any old images to start from scratch:
+- docker-compose down --volumes --remove-orphans
+- docker rmi $(docker images -q) -f
 
-Contributions:
+  Then to build and run the app:
+  - docker-compose build --no-cache
+  - docker-compose up
+ 
+(Extracting and loading into the database may take a while, but eventually terminal will display the link to Streamlit)
+
+## $\textbf{Contributions:}$
+
 Madeline - Extraction, Cleaning, Dockerizing
+
+Pheobe - Streamlit App, Visualizations, Dockerizing
+
+Luis - Load.py, Database Structuring, Dockerizing
 
 ...

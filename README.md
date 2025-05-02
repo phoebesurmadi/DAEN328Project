@@ -43,9 +43,9 @@ Run the following in command prompt or terminal to shut down any previously run 
 - docker-compose down --volumes --remove-orphans
 - docker rmi $(docker images -q) -f
 
-  Then to build and run the app:
-  - docker-compose build --no-cache
-  - docker-compose up
+Then to build and run the app:
+- docker-compose build --no-cache
+- docker-compose up
  
 (Extracting and loading into the database may take a while, but eventually terminal will display the link to Streamlit)
 

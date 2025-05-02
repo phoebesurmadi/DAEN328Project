@@ -16,6 +16,7 @@ seaborn
 sqlalchemy
 plotly
 python-dotenv
+streamlit_folium
 
 # dockerizing (?)
 

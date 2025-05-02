@@ -49,6 +49,8 @@ Then to build and run the app:
  
 (Extracting and loading into the database may take a while, but eventually terminal will display the link to Streamlit)
 
+- Streamlit Link: http://0.0.0.0:8501
+
 ## $\textbf{Contributions:}$
 
 Madeline - Extraction, Cleaning, Dockerizing

@@ -216,24 +216,6 @@ fig.update_layout(
 )
 st.plotly_chart(fig, use_container_width=True)
 
-#violation frequency
-st.subheader("⚠️ Violation Frequency by Risk Level")
-risk_heat = df_viol.groupby(['risk', 'violation']).size().reset_index(name='Count')
-
-heatmap_fig = px.density_heatmap(
-    risk_heat,
-    x='violation',
-    y='risk',
-    z='Count',
-    color_continuous_scale='Inferno',
-    title="Heatmap: Frequency of Violation Codes by Risk Category"
-)
-heatmap_fig.update_layout(
-    plot_bgcolor='white',
-    margin=dict(l=40, r=20, t=40, b=40)
-)
-st.plotly_chart(heatmap_fig, use_container_width=True)
-
 #violation distributions
 st.subheader("🏢 Violation Distribution by Facility Type")
 fac_viol = df_viol.groupby(['facility_type', 'violation']).size().reset_index(name='Count')

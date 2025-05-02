@@ -57,4 +57,3 @@ Pheobe - Streamlit App, Visualizations, Dockerizing
 
 Luis - Load.py, Database Structuring, Dockerizing
 
-...

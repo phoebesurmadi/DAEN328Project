@@ -182,6 +182,17 @@ map_fig = px.scatter_mapbox(
 map_fig.update_layout(mapbox_style="carto-positron", margin={"r":0,"t":0,"l":0,"b":0})
 st.plotly_chart(map_fig, use_container_width=True)
 
+# Filter out rows with violations and make a copy
+df_viol = df.dropna(subset=['violations']).copy()
+# Make sure it's treated as a string
+df_viol['violations'] = df_viol['violations'].astype(str)
+# Split by whitespace and explode
+df_viol = df_viol.assign(
+    violation=df_viol['violations'].str.split()
+).explode('violation')
+# Convert to integer for analysis
+df_viol['violation'] = df_viol['violation'].astype(int)
+
 #Common Violations
 st.subheader("🚨 Top 20 Most Common Violations")
 top_viol = df['violations'].value_counts().nlargest(20).reset_index()

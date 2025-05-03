@@ -1,7 +1,9 @@
 # Team 1: Final Project
 
+# Overview
+
 ## $\textbf{Project Overview:}$
-In this project we build a complete, modular, and dockerized ETL pipeline of data from the Chicago Food Inspections API. The final project...
+In this project we build a complete, modular, and dockerized ETL pipeline of data from the Chicago Food Inspections API. The API holds information on individual inspection records in Chicago, IL, updated in real time. The final project...
 
 1. Fetches data from the API
 2. Cleans the data
@@ -36,10 +38,13 @@ In this project we build a complete, modular, and dockerized ETL pipeline of dat
 
 'latitude', 'longitude': float values
 
-
+# Instructions
 ## $\textbf{Instructions:}$
 
-Run the following in command prompt or terminal to shut down any previously run images and delete any old images to start from scratch:
+The entire Docker system can be run using
+- docker-compose up --build
+
+If you want to clean up old images and run things a bit more separated, run the following in command prompt or terminal to shut down any previously run images and delete any old images to start from scratch:
 - docker-compose down --volumes --remove-orphans
 - docker rmi $(docker images -q) -f
 
@@ -50,6 +55,9 @@ Then to build and run the app:
 (Extracting and loading into the database may take a while, but eventually terminal will display the link to Streamlit)
 
 - Streamlit Link: http://0.0.0.0:8501
+# Postgres Setup
+
+# Streamlit Screenshot
 
 ## $\textbf{Contributions:}$
 

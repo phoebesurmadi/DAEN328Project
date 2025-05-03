@@ -70,7 +70,7 @@ The top of the streamlit page. Title and some basic data info.
 Example of using the interactive side panel and an interactive map view of 'results' by location.
 ![Image](images/streamlit2.png?raw=true)
 
-## **Contributions**
+# Contributions
 
 Madeline - Extraction, Cleaning, Dockerizing
 

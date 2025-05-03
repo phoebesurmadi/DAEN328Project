@@ -56,6 +56,7 @@ Then to build and run the app:
 
 - Streamlit Link: http://0.0.0.0:8501
 # Postgres Setup
+![Image](Postgres_Setup.png?raw=true)
 
 # Streamlit Screenshot
 

@@ -64,9 +64,14 @@ Then to build and run the app:
 
 - Streamlit Link: http://0.0.0.0:8501
 # Postgres Setup
-![Image](Postgres_Setup.png?raw=true)
+![Image](images/Postgres_Setup.png?raw=true)
 
-# Streamlit Screenshot
+# Streamlit 
+The top of the streamlit page. Title and some basic data info.
+![Image](images/streamlit1.png?raw=true)
+
+Example of using the interactive side panel and an interactive map view of 'results' by location.
+![Image](images/streamlit2.png?raw=true)
 
 ## $\textbf{Contributions:}$
 

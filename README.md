@@ -47,8 +47,7 @@ First, cd the copied repository folder and source your activate file if using a 
 
 Then, after opening postgres, copy the .env.sample file and replace the password with your postgres password.
 - run: cp .env.sample .env
-- repalce the POSTGRES_PASSWORD value
-
+  
 The entire Docker system can be run using
 - docker-compose up --build
 

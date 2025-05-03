@@ -41,6 +41,14 @@ In this project we build a complete, modular, and dockerized ETL pipeline of dat
 # Instructions
 ## $\textbf{Instructions:}$
 
+First, cd the copied repository folder and source your activate file if using a venv:
+- cd <repo/path>
+- source <activate/path>
+
+Then, after opening postgres, copy the .env.sample file and replace the password with your postgres password.
+- run: cp .env.sample .env
+- repalce the POSTGRES_PASSWORD value
+
 The entire Docker system can be run using
 - docker-compose up --build
 
@@ -52,7 +60,7 @@ Then to build and run the app:
 - docker-compose build --no-cache
 - docker-compose up
  
-(Extracting and loading into the database may take a while, but eventually terminal will display the link to Streamlit)
+(Extracting and loading into the database may take a while, but eventually terminal/command prompt will display the link to Streamlit. Don't open the streamlit link in your browser until terminal/command prompt displays '✅ Data loading complete.')
 
 - Streamlit Link: http://0.0.0.0:8501
 # Postgres Setup

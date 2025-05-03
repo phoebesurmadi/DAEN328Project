@@ -39,8 +39,6 @@ In this project we build a complete, modular, and dockerized ETL pipeline of dat
 'latitude', 'longitude': float values
 
 # Instructions
-## $\textbf{Instructions:}$
-
 First, cd the copied repository folder and source your activate file if using a venv:
 - cd <repo/path>
 - source <activate/path>
@@ -72,11 +70,11 @@ The top of the streamlit page. Title and some basic data info.
 Example of using the interactive side panel and an interactive map view of 'results' by location.
 ![Image](images/streamlit2.png?raw=true)
 
-## $\textbf{Contributions:}$
+## **Contributions**
 
 Madeline - Extraction, Cleaning, Dockerizing
 
-Pheobe - Streamlit App, Visualizations, Dockerizing
+Phoebe - Streamlit App, Visualizations, Dockerizing
 
 Luis - Load.py, Database Structuring, Dockerizing
 

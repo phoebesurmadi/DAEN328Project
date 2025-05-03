@@ -7,5 +7,5 @@ WORKDIR /app
 COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
-CMD python extract.py && python transform.py && python load.py && streamlit run streamlit_app.py
+#CMD python extract.py && python transform.py && python load.py && streamlit run streamlit_app.py
 

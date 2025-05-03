@@ -2,7 +2,7 @@
 
 # Overview
 
-## $\textbf{Project Overview:}$
+## **Project Overview**
 In this project we build a complete, modular, and dockerized ETL pipeline of data from the Chicago Food Inspections API. The API holds information on individual inspection records in Chicago, IL, updated in real time. The final project...
 
 1. Fetches data from the API
@@ -12,7 +12,7 @@ In this project we build a complete, modular, and dockerized ETL pipeline of dat
 5. Is fully dockerized using Docker and Docker Compose
 
 
-## $\textbf{Data Descriptions:}$
+## **Data Descriptions**
 
 'inspection_id': unique inspection ID
 
@@ -79,4 +79,5 @@ Madeline - Extraction, Cleaning, Dockerizing
 Pheobe - Streamlit App, Visualizations, Dockerizing
 
 Luis - Load.py, Database Structuring, Dockerizing
+
 

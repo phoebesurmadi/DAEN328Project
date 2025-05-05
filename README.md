@@ -59,7 +59,7 @@ Then to build and run the app:
  
 (Extracting and loading into the database may take a while, but eventually terminal/command prompt will display the link to Streamlit. Don't open the streamlit link in your browser until terminal/command prompt displays '✅ Data loading complete.')
 
-- Streamlit Link: http://0.0.0.0:8501
+- Streamlit Link: http://0.0.0.0:8501 or http://localhost:8501
 # Postgres Setup
 ![Image](images/Postgres_Setup.png?raw=true)
 
